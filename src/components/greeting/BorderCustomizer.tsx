@@ -149,7 +149,7 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
               <div className="flex items-center justify-between">
                 <Label className="flex items-center gap-2">Border Elements 
                  
-                                <span className="bg-primary/10 text-primary">( {internalSettings.decorativeElements.length}/5)</span>
+                      <span className="bg-primary/10 text-primary">( {internalSettings.decorativeElements.length}/5)</span>
                   </Label>
                 <Button
                   size="sm"
@@ -200,7 +200,7 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
                 </div>
               ))}
             </div>
-          </>
+          </>  
         )}
       </CardContent>
     </Card>
