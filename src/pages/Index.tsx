@@ -11,6 +11,8 @@ import TypingText from '../components/reusableTypingText/TypingText'
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import LandingPage from '@/components/landingPage/LandingPage'
 import Preview from '@/components/greeting/Preview';
+import { FloatingButton } from '@/components/share/CustomizeAndShare'; // Adjust import path
+
 
 const Index = () => {
   const location = useLocation();
@@ -82,18 +84,6 @@ const Index = () => {
       }
     }
   }, [location.search]);
-
-  const shareWithSomeoneElse = () => {
-    const params = new URLSearchParams();
-    if (greetingData?.eventType) {
-      params.append('eventType', greetingData.eventType);
-    }
-    if (greetingData?.senderName) {
-      params.append('senderName', greetingData.senderName);
-    }
-    navigate(`/create?${params.toString()}`);
-  };
-
   
   // Generate background classes based on settings
   const getBackgroundClasses = () => {
@@ -145,7 +135,9 @@ return (
           selectedEvent={currentEvent}
           showVisualEditor={false}
         />
-           
+
+        <FloatingButton />
+        
       </>
     );
 

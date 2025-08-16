@@ -574,49 +574,7 @@ const PreviewComponent = ({
                 aria-label={translate('Sharing options')}
               >
                    <ShareActions greetingData={greetingData} greetingRef={greetingRef} />
-              <Button
-                size="lg"
-                className="
-                  w-full sm:w-auto px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5
-                  text-sm sm:text-base md:text-lg
-                  relative overflow-hidden group animate-zoom-in shadow-2xl 
-                  hover:shadow-primary/30 transition-all duration-500 
-                  bg-gradient-to-r from-pink-500 to-violet-500 hover:bg-gradient-to-l
-                  rounded-lg
-                "
-              >
-                {/* Inner content */}
-                <span className="relative z-10 flex items-center justify-center whitespace-nowrap">
-                  <span className="mr-2 sm:mr-3 text-lg sm:text-xl md:text-2xl group-hover:animate-spin">
-                    ✨
-                  </span>
-                  <span className="text-center">Customize and share with others</span>
-                </span>
-
-                {/* Shine effect */}
-                <span className="
-                  absolute top-0 left-1/2 w-16 sm:w-20 h-full 
-                  bg-white/30 -skew-x-12 transform -translate-x-1/2 
-                  opacity-0 group-hover:opacity-100 group-hover:animate-shine 
-                  transition-opacity duration-700
-                " />
-
-                {/* Border morph */}
-                <span className="
-                  absolute inset-0 border-2 border-transparent 
-                  group-hover:border-white/30 rounded-lg 
-                  group-hover:rounded-none 
-                  transition-all duration-300 ease-[cubic-bezier(0.65,0,0.35,1)]
-                " />
-
-                {/* Lightning border animation */}
-                <span className="
-                  absolute inset-0 border-2 border-transparent 
-                  group-hover:border-[length:400%_400%] 
-                  group-hover:bg-[length:400%_400%]
-                  group-hover:animate-lightning-rounding
-                " />
-              </Button>
+           
             </div>
             </div>
           </CardContent>
