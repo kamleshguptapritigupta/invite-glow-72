@@ -12,13 +12,13 @@ import { useToast } from '@/hooks/use-toast';
 import { GreetingFormData, MediaItem, TextContent, EventType } from '@/types/greeting';
 import { BorderSettings } from '@/types/background';
 import { eventTypes, animationStyles } from '@/data/eventTypes';
-import BasicDetailsForm from '@/components/greeting/form/BasicDetailsForm';
+import EnhancedBasicDetailsForm from '@/components/greeting/form/EnhancedBasicDetailsForm';
 import ContentForm from '@/components/greeting/form/ContentForm';
 import CustomizationForm from '@/components/greeting/form/CustomizationForm';
 import ActionsForm from '@/components/greeting/form/ActionsForm';
 import LanguageSelector from '@/components/language/LanguageSelector';
 import ShareActions from '@/components/share/ShareActions';
-import Preview from '@/components/greeting/Preview';
+import EnhancedPreview from '@/components/greeting/EnhancedPreview';
 import SEOManager from '@/components/seo/SEOManager';
 import BackButton from '@/components/ui/back-button';
 import { Palette, Eye, Wand2, Share2 } from 'lucide-react';
@@ -273,7 +273,7 @@ useEffect(() => {
 
 
             <CardContent className="space-y-6">
-              <BasicDetailsForm
+              <EnhancedBasicDetailsForm
                 eventType={formData.eventType}
                 senderName={formData.senderName}
                 receiverName={formData.receiverName}
@@ -358,7 +358,11 @@ useEffect(() => {
 </CardHeader>
   <CardContent>
     {formData.eventType ? (
-      <Preview greetingData={formData} selectedEvent={selectedEvent} />
+      <EnhancedPreview 
+        greetingData={formData} 
+        selectedEvent={selectedEvent} 
+        onDataChange={setFormData}
+      />
     ) : (
       <div className="text-center text-muted-foreground py-12">
         <div className="text-4xl mb-4">🎨</div>
@@ -379,7 +383,7 @@ useEffect(() => {
       >
         ✕
       </Button>
-      <Preview greetingData={formData} selectedEvent={selectedEvent} />
+      <EnhancedPreview greetingData={formData} selectedEvent={selectedEvent} />
     </div>
   </div>
 )}

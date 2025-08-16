@@ -34,18 +34,28 @@ const ActionsForm = ({ greetingData, onGenerateLink }: ActionsFormProps) => {
       }
     });
 
-    // Add custom event details if it's a custom event
-    if (greetingData.eventType === 'custom' && greetingData.customEventName) {
-      params.append('customEventName', greetingData.customEventName);
-      if (greetingData.customEventEmoji) {
-        params.append('customEventEmoji', greetingData.customEventEmoji);
-      }
+    // Enhanced custom event handling
+    if (greetingData.eventType === 'custom') {
+      // Get custom event details from multiple sources
+      const customEventName = greetingData.customEventName || 'Custom Event';
+      const customEventEmoji = greetingData.customEventEmoji || '🎉';
+      
+      params.append('customEventName', customEventName);
+      params.append('customEventEmoji', customEventEmoji);
+      
+      // Ensure we're passing the custom event type correctly
+      params.set('eventType', 'custom');
     }
 
     const shareableURL = `${window.location.origin}/?${params.toString()}`;
     navigator.clipboard.writeText(shareableURL);
     
-    console.log('Generated URL params:', params.toString()); // Debug log
+    console.log('Generated URL with custom event:', {
+      eventType: greetingData.eventType,
+      customEventName: greetingData.customEventName,
+      customEventEmoji: greetingData.customEventEmoji,
+      url: shareableURL
+    });
   };
 
   return (

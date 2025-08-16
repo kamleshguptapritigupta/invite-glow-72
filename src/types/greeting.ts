@@ -20,8 +20,20 @@ export interface MediaItem {
   };
   animation: string;
   priority: number;
-  fileType?: string; // Add this for better video handling
+  fileType?: string;
+  textOverlays?: TextOverlay[];
+}
 
+export interface TextOverlay {
+  id: string;
+  content: string;
+  position: { x: number; y: number };
+  style: {
+    fontSize: string;
+    fontWeight: string;
+    color: string;
+    textAlign: 'left' | 'center' | 'right';
+  };
 }
 
 export interface TextContent {
@@ -50,7 +62,7 @@ export interface GreetingFormData {
     height: number;
   };
   animationStyle: string;
-  layout: 'grid' | 'masonry' | 'carousel' | 'stack' | 'collage' | 'mosaic' | 'slideshow' | 'polaroid' | 'magazine';
+  layout: 'grid' | 'masonry' | 'carousel' | 'stack' | 'collage' | 'mosaic' | 'slideshow' | 'polaroid' | 'magazine' | 'gallery' | 'timeline' | 'hexagon' | 'circular' | 'spiral' | 'wave';
   theme: string;
   backgroundSettings: {
     color: string;

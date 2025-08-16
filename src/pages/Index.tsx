@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TypingText from '../components/reusableTypingText/TypingText'
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import LandingPage from '@/components/landingPage/LandingPage'
-import Preview from '@/components/greeting/Preview';
+import EnhancedPreview from '@/components/greeting/EnhancedPreview';
 import { FloatingButton } from '@/components/share/CustomizeAndShare'; // Adjust import path
 
 
@@ -27,19 +27,20 @@ const Index = () => {
     const params = new URLSearchParams(location.search);
     
     if (params.toString()) {
-      // Extract greeting data from URL parameters with new structure
+      console.log('URL Parameters:', params.toString()); // Debug log
+      
+      // Extract greeting data from URL parameters with enhanced structure
       const data: GreetingFormData = {
         eventType: params.get('eventType') || '',
         senderName: params.get('senderName') || '',
         receiverName: params.get('receiverName') || '',
-        customEventName: params.get('customEventName') || '', // Add custom event name
+        customEventName: params.get('customEventName') || '',
         customEventEmoji: params.get('customEventEmoji') || '',
         texts: params.get('texts') ? JSON.parse(params.get('texts')!) : [],
         media: params.get('media') ? JSON.parse(params.get('media')!) : [],
         videoUrl: params.get('videoUrl') || '',
         videoPosition: params.get('videoPosition') ? JSON.parse(params.get('videoPosition')!) : { width: 400, height: 300 },
         animationStyle: params.get('animationStyle') || 'fade',
-        
         layout: (params.get('layout') as any) || 'grid',
         theme: params.get('theme') || '',
         backgroundSettings: params.get('backgroundSettings') ? JSON.parse(params.get('backgroundSettings')!) : {
@@ -63,12 +64,19 @@ const Index = () => {
       
       setGreetingData(data);
       
-      // Handle both predefined and custom events
-
+      console.log('Parsed Data:', {
+        eventType: data.eventType,
+        customEventName: data.customEventName,
+        customEventEmoji: data.customEventEmoji
+      }); // Debug log
+      
+      // Enhanced custom event handling
       if (data.eventType === 'custom') {
-        // Create custom event object with proper parameter handling
         const customEventName = params.get('customEventName') || data.customEventName || 'Custom Event';
         const customEventEmoji = params.get('customEventEmoji') || data.customEventEmoji || '🎉';
+        
+        console.log('Creating custom event:', { customEventName, customEventEmoji }); // Debug log
+        
         setCurrentEvent({
           value: 'custom',
           emoji: customEventEmoji,
@@ -130,7 +138,7 @@ return (
           title={`${currentEvent?.label || 'Greeting'} for ${greetingData.receiverName || 'You'}`}
           description={greetingData.texts[0]?.content || currentEvent?.defaultMessage || ''}
         />
-        <Preview 
+        <EnhancedPreview 
           greetingData={greetingData}
           selectedEvent={currentEvent}
           showVisualEditor={false}

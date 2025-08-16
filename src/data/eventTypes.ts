@@ -261,9 +261,19 @@ export const animationStyles = [
 ];
 
 export const layoutStyles = [
-  { value: 'grid', label: 'Grid Layout' },
-  { value: 'masonry', label: 'Masonry Layout' },
-  { value: 'carousel', label: 'Carousel Layout' },
-  { value: 'stack', label: 'Stack Layout' },
-  { value: 'collage', label: 'Collage Layout' }
+  { value: 'grid', label: '🔲 Grid Layout' },
+  { value: 'masonry', label: '🧩 Masonry Layout' },
+  { value: 'carousel', label: '🎠 Carousel Layout' },
+  { value: 'stack', label: '📚 Stack Layout' },
+  { value: 'collage', label: '🎨 Collage Layout' },
+  { value: 'mosaic', label: '🪟 Mosaic Layout' },
+  { value: 'slideshow', label: '🎬 Slideshow Layout' },
+  { value: 'polaroid', label: '📸 Polaroid Layout' },
+  { value: 'magazine', label: '📰 Magazine Layout' },
+  { value: 'gallery', label: '🖼️ Gallery Layout' },
+  { value: 'timeline', label: '⏰ Timeline Layout' },
+  { value: 'hexagon', label: '⬡ Hexagon Layout' },
+  { value: 'circular', label: '⭕ Circular Layout' },
+  { value: 'spiral', label: '🌀 Spiral Layout' },
+  { value: 'wave', label: '🌊 Wave Layout' }
 ];
