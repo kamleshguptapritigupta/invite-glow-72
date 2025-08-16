@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import SEOManager from '@/components/seo/SEOManager';
 import TypingText from '@/components/reusableTypingText/TypingText'
-import { useLanguageTranslation } from '@/hooks/useLanguageTranslation';
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
@@ -168,7 +168,7 @@ const LandingPage: React.FC = () => {
                   { icon: '🖼️', text: 'Image & Video Support' },
                   { icon: '🎵', text: 'Background Music' },
                   { icon: '💬', text: 'Multiple Messages' },
-                  { icon: '🎭', text: 'Event Themes' }
+                  { icon: '🎭', text: 'Event Themes Customization' }
                 ].map((item, i) => (
                   <div key={i} className="flex items-center group">
                     <span className="text-xl sm:text-2xl mr-2 sm:mr-3 group-hover:rotate-12 transition-transform">{item.icon}</span>

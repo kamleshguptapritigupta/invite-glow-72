@@ -50,7 +50,7 @@ export interface GreetingFormData {
     height: number;
   };
   animationStyle: string;
-  layout: 'grid' | 'masonry' | 'carousel' | 'stack' | 'collage';
+  layout: 'grid' | 'masonry' | 'carousel' | 'stack' | 'collage' | 'mosaic' | 'slideshow' | 'polaroid' | 'magazine';
   theme: string;
   backgroundSettings: {
     color: string;

@@ -1,4 +1,5 @@
 export interface BackgroundSettings {
+  enabled?: boolean;
   color: string;
   gradient: {
     enabled: boolean;

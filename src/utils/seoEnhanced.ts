@@ -249,7 +249,12 @@ export const languageSEOMap: Record<string, Record<string, AdvancedSEOData>> = {
   }
 };
 
-export const generateAdvancedSEO = (eventType: string, lang: string = 'en', country?: string): AdvancedSEOData => {
+
+export const generateAdvancedSEO = (
+  eventType: string, 
+  lang: string = 'en', 
+  country?: string
+): AdvancedSEOData => {
   const key = `${eventType}_${lang}`;
   const countryKey = country ? `${lang}-${country.toUpperCase()}` : lang;
   

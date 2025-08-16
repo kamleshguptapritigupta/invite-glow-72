@@ -1,77 +1,79 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { 
+  createContext, 
+  useContext, 
+  useState, 
+  useCallback, 
+  useEffect, 
+  ReactNode,
+  useMemo
+} from 'react';
 
-// Type definitions
-export interface Language {
+export type Language = {
   code: string;
   name: string;
   flag: string;
-  direction?: 'ltr' | 'rtl';
-}
-
-type TranslationValue = string | { [key: string]: TranslationValue };
-type TranslationDictionary = Record<string, TranslationValue>;
-type TranslationParams = Record<string, string | number>;
+  direction: 'ltr' | 'rtl';
+};
 
 export const languages: Language[] = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
-  { code: 'bn', name: 'বাংলা', flag: '🇧🇩' },
-  { code: 'te', name: 'తెలుగు', flag: '🇮🇳' },
-  { code: 'mr', name: 'मराठी', flag: '🇮🇳' },
-  { code: 'ta', name: 'தமிழ்', flag: '🇮🇳' },
-  { code: 'gu', name: 'ગુજરાતી', flag: '🇮🇳' },
-  { code: 'kn', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
-  { code: 'ml', name: 'മലയാളം', flag: '🇮🇳' },
-  { code: 'pa', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
-  { code: 'or', name: 'ଓଡ଼ିଆ', flag: '🇮🇳' },
-  { code: 'as', name: 'অসমীয়া', flag: '🇮🇳' },
+  { code: 'en', name: 'English', flag: '🇺🇸', direction: 'ltr' },
+  { code: 'hi', name: 'हिंदी', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'bn', name: 'বাংলা', flag: '🇧🇩', direction: 'ltr' },
+  { code: 'te', name: 'తెలుగు', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'mr', name: 'मराठी', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'ta', name: 'தமிழ்', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'gu', name: 'ગુજરાતી', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'kn', name: 'ಕನ್ನಡ', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'ml', name: 'മലയാളം', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'pa', name: 'ਪੰਜਾਬੀ', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'or', name: 'ଓଡ଼ିଆ', flag: '🇮🇳', direction: 'ltr' },
+  { code: 'as', name: 'অসমীয়া', flag: '🇮🇳', direction: 'ltr' },
   { code: 'ur', name: 'اردو', flag: '🇵🇰', direction: 'rtl' },
-  { code: 'ne', name: 'नेपाली', flag: '🇳🇵' },
-  { code: 'si', name: 'සිංහල', flag: '🇱🇰' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  { code: 'ne', name: 'नेपाली', flag: '🇳🇵', direction: 'ltr' },
+  { code: 'si', name: 'සිංහල', flag: '🇱🇰', direction: 'ltr' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', direction: 'ltr' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', direction: 'ltr' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪', direction: 'ltr' },
+  { code: 'zh', name: '中文', flag: '🇨🇳', direction: 'ltr' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵', direction: 'ltr' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷', direction: 'ltr' },
   { code: 'ar', name: 'العربية', flag: '🇸🇦', direction: 'rtl' },
-  { code: 'pt', name: 'Português', flag: '🇧🇷' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'th', name: 'ไทย', flag: '🇹🇭' },
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
-  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
-  { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+  { code: 'pt', name: 'Português', flag: '🇧🇷', direction: 'ltr' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺', direction: 'ltr' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹', direction: 'ltr' },
+  { code: 'th', name: 'ไทย', flag: '🇹🇭', direction: 'ltr' },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', direction: 'ltr' },
+  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩', direction: 'ltr' },
+  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾', direction: 'ltr' },
+  { code: 'tr', name: 'Türkçe', flag: '🇹🇷', direction: 'ltr' },
   { code: 'fa', name: 'فارسی', flag: '🇮🇷', direction: 'rtl' },
-  { code: 'sw', name: 'Kiswahili', flag: '🇰🇪' },
-  { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-  { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
-  { code: 'no', name: 'Norsk', flag: '🇳🇴' },
-  { code: 'da', name: 'Dansk', flag: '🇩🇰' },
-  { code: 'fi', name: 'Suomi', flag: '🇫🇮' },
-  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-  { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
-  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
-  { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
-  { code: 'ro', name: 'Română', flag: '🇷🇴' },
-  { code: 'bg', name: 'Български', flag: '🇧🇬' },
-  { code: 'hr', name: 'Hrvatski', flag: '🇭🇷' },
-  { code: 'sr', name: 'Српски', flag: '🇷🇸' },
-  { code: 'sl', name: 'Slovenščina', flag: '🇸🇮' },
-  { code: 'et', name: 'Eesti', flag: '🇪🇪' },
-  { code: 'lv', name: 'Latviešu', flag: '🇱🇻' },
-  { code: 'lt', name: 'Lietuvių', flag: '🇱🇹' },
-  { code: 'mk', name: 'Македонски', flag: '🇲🇰' },
-  { code: 'mt', name: 'Malti', flag: '🇲🇹' },
-  { code: 'cy', name: 'Cymraeg', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
-  { code: 'ga', name: 'Gaeilge', flag: '🇮🇪' },
-  { code: 'eu', name: 'Euskera', flag: '🇪🇸' },
-  { code: 'ca', name: 'Català', flag: '🇪🇸' }
+  { code: 'sw', name: 'Kiswahili', flag: '🇰🇪', direction: 'ltr' },
+  { code: 'nl', name: 'Nederlands', flag: '🇳🇱', direction: 'ltr' },
+  { code: 'sv', name: 'Svenska', flag: '🇸🇪', direction: 'ltr' },
+  { code: 'no', name: 'Norsk', flag: '🇳🇴', direction: 'ltr' },
+  { code: 'da', name: 'Dansk', flag: '🇩🇰', direction: 'ltr' },
+  { code: 'fi', name: 'Suomi', flag: '🇫🇮', direction: 'ltr' },
+  { code: 'pl', name: 'Polski', flag: '🇵🇱', direction: 'ltr' },
+  { code: 'cs', name: 'Čeština', flag: '🇨🇿', direction: 'ltr' },
+  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰', direction: 'ltr' },
+  { code: 'hu', name: 'Magyar', flag: '🇭🇺', direction: 'ltr' },
+  { code: 'ro', name: 'Română', flag: '🇷🇴', direction: 'ltr' },
+  { code: 'bg', name: 'Български', flag: '🇧🇬', direction: 'ltr' },
+  { code: 'hr', name: 'Hrvatski', flag: '🇭🇷', direction: 'ltr' },
+  { code: 'sr', name: 'Српски', flag: '🇷🇸', direction: 'ltr' },
+  { code: 'sl', name: 'Slovenščina', flag: '🇸🇮', direction: 'ltr' },
+  { code: 'et', name: 'Eesti', flag: '🇪🇪', direction: 'ltr' },
+  { code: 'lv', name: 'Latviešu', flag: '🇱🇻', direction: 'ltr' },
+  { code: 'lt', name: 'Lietuvių', flag: '🇱🇹', direction: 'ltr' },
+  { code: 'mk', name: 'Македонски', flag: '🇲🇰', direction: 'ltr' },
+  { code: 'mt', name: 'Malti', flag: '🇲🇹', direction: 'ltr' },
+  { code: 'cy', name: 'Cymraeg', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', direction: 'ltr' },
+  { code: 'ga', name: 'Gaeilge', flag: '🇮🇪', direction: 'ltr' },
+  { code: 'eu', name: 'Euskera', flag: '🇪🇸', direction: 'ltr' },
+  { code: 'ca', name: 'Català', flag: '🇪🇸', direction: 'ltr' }
 ];
 
-  // Translations for common greeting terms
-const translations: TranslationDictionary = {
+const translations: Record<string, Record<string, string>> = {
   'Create Your Greeting': {
     hi: 'अपना अभिवादन बनाएं',
     bn: 'আপনার শুভেচ্ছা তৈরি করুন',
@@ -1091,186 +1093,313 @@ const translations: TranslationDictionary = {
     eu: 'Pozik eta zorionez betetako urtebetetze zoragarria opa dizut!',
     ca: 'Us desitjo un aniversari fantàstic ple d\'alegria i felicitat!'
   },
+  "Your Name": {
+    "en": "Your Name",
+    "hi": "आपका नाम",
+    "bn": "আপনার নাম",
+    "te": "మీ పేరు",
+    "mr": "तुमचे नाव",
+    "ta": "உங்கள் பெயர்",
+    "gu": "તમારું નામ",
+    "kn": "ನಿಮ್ಮ ಹೆಸರು",
+    "ml": "നിങ്ങളുടെ പേര്",
+    "pa": "ਤੁਹਾਡਾ ਨਾਮ",
+    "ur": "آپ کا نام",
+    "es": "Tu Nombre",
+    "fr": "Votre Nom",
+    "de": "Ihr Name",
+    "it": "Il Tuo Nome",
+    "pt": "Seu Nome",
+    "ru": "Ваше Имя",
+    "zh": "您的名字",
+    "ja": "あなたの名前",
+    "ko": "당신의 이름",
+    "ar": "اسمك",
+    "tr": "Adınız",
+    "nl": "Jouw Naam",
+    "sv": "Ditt Namn",
+    "fi": "Nimesi",
+    "da": "Dit Navn",
+    "no": "Ditt Navn",
+    "pl": "Twoje Imię",
+    "th": "ชื่อของคุณ",
+    "vi": "Tên của bạn",
+    "id": "Nama Anda",
+    "ms": "Nama Anda",
+    "tl": "Iyong Pangalan",
+    "he": "השם שלך",
+    "fa": "نام شما",
+    "ps": "ستاسو نوم",
+    "sw": "Jina Lako",
+    "am": "ስምህ",
+    "ha": "Sunanka",
+    "yo": "Oruko Re",
+    "zu": "Igama Lakho",
+    "xh": "Igama Lakho",
+    "sn": "Zita Rako",
+    "st": "Lebitso la Hao",
+    "ne": "तपाईंको नाम",
+    "si": "ඔබේ නම",
+    "km": "ឈ្មោះរបស់អ្នក",
+    "lo": "ຊື່ຂອງເຈົ້າ",
+    "my": "သင့်နာမည်",
+    "ka": "თქვენი სახელი",
+    "hy": "Քո անունը",
+    "az": "Sizin Adınız",
+    "kk": "Сіздің Атыңыз",
+    "ky": "Сиздин Атыңыз",
+    "uz": "Sizning Ismingiz",
+    "tg": "Номи Шумо",
+    "mn": "Таны Нэр"
+  },
+  "Receiver's Name": {
+    "en": "Receiver's Name",
+    "hi": "प्राप्तकर्ता का नाम",
+    "bn": "প্রাপকের নাম",
+    "te": "స్వీకర్త పేరు",
+    "mr": "प्राप्तकर्त्याचे नाव",
+    "ta": "பெறுநர் பெயர்",
+    "gu": "પ્રાપ્તકર્તાનું નામ",
+    "kn": "ಸ್ವೀಕರಿಸುವವರ ಹೆಸರು",
+    "ml": "സ്വീകർത്താവിന്റെ പേര്",
+    "pa": "ਪ੍ਰਾਪਤਕਰਤਾ ਦਾ ਨਾਮ",
+    "ur": "وصول کنندہ کا نام",
+    "es": "Nombre del Destinatario",
+    "fr": "Nom du Destinataire",
+    "de": "Name des Empfängers",
+    "it": "Nome del Destinatario",
+    "pt": "Nome do Destinatário",
+    "ru": "Имя Получателя",
+    "zh": "收件人姓名",
+    "ja": "受取人の名前",
+    "ko": "수신자 이름",
+    "ar": "اسم المستلم",
+    "tr": "Alıcının Adı",
+    "nl": "Naam van Ontvanger",
+    "sv": "Mottagarens Namn",
+    "fi": "Vastaanottajan Nimi",
+    "da": "Modtagers Navn",
+    "no": "Mottakers Navn",
+    "pl": "Nazwa Odbiorcy",
+    "th": "ชื่อผู้รับ",
+    "vi": "Tên Người Nhận",
+    "id": "Nama Penerima",
+    "ms": "Nama Penerima",
+    "tl": "Pangalan ng Tatanggap",
+    "he": "שם הנמען",
+    "fa": "نام گیرنده",
+    "ps": "د ترلاسه کوونکي نوم",
+    "sw": "Jina la Mpokeaji",
+    "am": "የተቀባዩ ስም",
+    "ha": "Sunan Mai Karɓa",
+    "yo": "Oruko Olugba",
+    "zu": "Igama Lomamukeli",
+    "xh": "Igama Lomamkeli",
+    "sn": "Zita Reanogamuchira",
+    "st": "Lebitso la Moamoheli",
+    "ne": "प्राप्तकर्ताको नाम",
+    "si": "ලබන්නාගේ නම",
+    "km": "ឈ្មោះអ្នកទទួល",
+    "lo": "ຊື່ຜູ້ຮັບ",
+    "my": "လက်ခံသူအမည်",
+    "ka": "მიმღების სახელი",
+    "hy": "Ստացողի Անունը",
+    "az": "Qəbul Edənin Adı",
+    "kk": "Қабылдаушының Аты",
+    "ky": "Кабыл алуучунун Аты",
+    "uz": "Qabul Qiluvchining Ismi",
+    "tg": "Номи Гиранда",
+    "mn": "Хүлээн авагчийн Нэр"
+  },
+  "optional": {
+    "en": "optional",
+    "hi": "वैकल्पिक",
+    "bn": "ঐচ্ছিক",
+    "te": "ఐచ్ఛికం",
+    "mr": "पर्यायी",
+    "ta": "விருப்பமான",
+    "gu": "વૈકલ્પિક",
+    "kn": "ಐಚ್ಛಿಕ",
+    "ml": "ഓപ്ഷണൽ",
+    "pa": "ਵਿਕਲਪਿਕ",
+    "ur": "اختیاری",
+    "es": "opcional",
+    "fr": "optionnel",
+    "de": "optional",
+    "it": "opzionale",
+    "pt": "opcional",
+    "ru": "необязательно",
+    "zh": "可选",
+    "ja": "任意",
+    "ko": "선택 사항",
+    "ar": "اختياري",
+    "tr": "isteğe bağlı",
+    "nl": "optioneel",
+    "sv": "valfri",
+    "fi": "valinnainen",
+    "da": "valgfri",
+    "no": "valgfri",
+    "pl": "opcjonalny",
+    "th": "ไม่จำเป็น",
+    "vi": "tùy chọn",
+    "id": "opsional",
+    "ms": "pilihan",
+    "tl": "opsyonal",
+    "he": "אופציונלי",
+    "fa": "اختیاری",
+    "ps": "اختیاري",
+    "sw": "hiari",
+    "am": "አማራጭ",
+    "ha": "zaɓi",
+    "yo": "ayanfẹyìn",
+    "zu": "okukhethwa kukho",
+    "xh": "okukhethwa kukho",
+    "sn": "sarudzo",
+    "st": "khetho",
+    "ne": "वैकल्पिक",
+    "si": "විකල්ප",
+    "km": "ជាជម្រើស",
+    "lo": "ທາງເລືອກ",
+    "my": "ရွေးချယ်မှု",
+    "ka": "არჩევითი",
+    "hy": "ընտրովի",
+    "az": "ixtiyari",
+    "kk": "міндетті емес",
+    "ky": "милдеттүү эмес",
+    "uz": "ixtiyoriy",
+    "tg": "ихтиёрӣ",
+    "mn": "сонголттой"
+  },
+  "Generate Share Link": {
+    "en": "Generate Share Link",
+    "hi": "साझा लिंक बनाएं",
+    "bn": "শেয়ার লিঙ্ক তৈরি করুন",
+    "te": "షేర్ లింక్ జనరేట్ చేయండి",
+    "mr": "शेअर लिंक तयार करा",
+    "ta": "பகிர் இணைப்பை உருவாக்கவும்",
+    "gu": "શેર લિંક જનરેટ કરો",
+    "kn": "ಶೇರ್ ಲಿಂಕ್ ರಚಿಸಿ",
+    "ml": "ഷെയർ ലിങ്ക് സൃഷ്ടിക്കുക",
+    "pa": "ਸ਼ੇਅਰ ਲਿੰਕ ਬਣਾਓ",
+    "ur": "شئیر لنک بنائیں",
+    "es": "Generar Enlace para Compartir",
+    "fr": "Générer un Lien de Partage",
+    "de": "Teilungslink Erstellen",
+    "it": "Genera Link di Condivisione",
+    "pt": "Gerar Link de Compartilhamento",
+    "ru": "Создать Ссылку для Поделиться",
+    "zh": "生成分享链接",
+    "ja": "共有リンクを生成",
+    "ko": "공유 링크 생성",
+    "ar": "إنشاء رابط مشاركة",
+    "tr": "Paylaşım Bağlantısı Oluştur",
+    "nl": "Deel Link Genereren",
+    "sv": "Generera Delningslänk",
+    "fi": "Luo Jakolinkki",
+    "da": "Generer Delingslink",
+    "no": "Generer Delingslenke",
+    "pl": "Wygeneruj Link Udostępniania",
+    "th": "สร้างลิงก์แชร์",
+    "vi": "Tạo Liên Kết Chia Sẻ",
+    "id": "Buat Tautan Berbagi",
+    "ms": "Hasilkan Pautan Kongsi",
+    "tl": "Lumikha ng Share Link",
+    "he": "צור קישור שיתוף",
+    "fa": "تولید لینک اشتراک گذاری",
+    "ps": "د شریکولو لینک جوړول",
+    "sw": "Tengeneza Kiungo cha Kushiriki",
+    "am": "የማጋራት አገናኝ ፍጠር",
+    "ha": "Ƙirƙiri Hanyar Haɗin Raba",
+    "yo": "Ṣẹda Ọna Asopọ Pinpin",
+    "zu": "Dala Isixhumanisi Sokwabelana",
+    "xh": "Yenza Isikhokelo Sokuabelana",
+    "sn": "Gadzira Share Link",
+    "st": "Theha Sehokelo sa Kabo",
+    "ne": "सेयर लिङ्क जनरेट गर्नुहोस्",
+    "si": "බෙදාගැනීමේ සබැඳිය ජනනය කරන්න",
+    "km": "បង្កើតតំណចែករំលែក",
+    "lo": "ສ້າງລິ້ງແບ່ງປັນ",
+    "my": "မျှဝေရန် လင့်ခ်ဖန်တီးပါ",
+    "ka": "გაზიარების ბმულის შექმნა",
+    "hy": "Ստեղծել Կիսման Հղում",
+    "az": "Paylaşma Linki Yaradın",
+    "kk": "Бөлісу Сілтемесін Жасау",
+    "ky": "Бөлүшүү Шилтемесин Түзүү",
+    "uz": "Ulashish Havolasini Yaratish",
+    "tg": "Эҷод кардани Пайванди Мубодила",
+    "mn": "Хуваалцах Холбоос Үүсгэх"
+  }
   
 };
 
-// Helper type for plural forms
-interface PluralForms {
-  zero?: string;
-  one?: string;
-  two?: string;
-  few?: string;
-  many?: string;
-  other: string;
+
+
+interface LanguageContextType {
+  currentLanguage: Language;
+  changeLanguage: (code: string) => void;
+  translate: (key: string) => string;
 }
 
-export const useLanguageTranslation = () => {
-  const [currentLanguage, setCurrentLanguage] = useState<string>(() => {
-    if (typeof window === 'undefined') return 'en';
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  const getInitialLanguage = useCallback((): Language => {
+    if (typeof window === 'undefined') return languages[0];
     
-    try {
-      const savedLang = localStorage.getItem('preferredLanguage');
-      if (savedLang && languages.some(l => l.code === savedLang)) {
-        return savedLang;
-      }
+    const savedLangCode = localStorage.getItem('language');
+    const foundLang = languages.find(l => l.code === savedLangCode);
+    return foundLang || languages[0];
+  }, []);
 
-      const browserLang = navigator.language.split('-')[0];
-      const matchedLang = languages.find(l => l.code === browserLang);
-      return matchedLang?.code || 'en';
-    } catch (e) {
-      console.error('Language detection failed:', e);
-      return 'en';
-    }
-  });
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(getInitialLanguage());
 
-  const getCurrentLanguage = useMemo((): Language => {
-    return languages.find(lang => lang.code === currentLanguage) || languages[0];
+  useEffect(() => {
+    document.documentElement.lang = currentLanguage.code;
+    document.documentElement.dir = currentLanguage.direction;
   }, [currentLanguage]);
 
-  const isRTL = useMemo(() => getCurrentLanguage.direction === 'rtl', [getCurrentLanguage]);
-
-  const applyLanguageSettings = useCallback((langCode: string): void => {
-    try {
-      const lang = languages.find(l => l.code === langCode) || languages[0];
-      
-      // Update HTML attributes
-      document.documentElement.lang = langCode;
-      document.documentElement.dir = lang.direction || 'ltr';
-      
-      // Update class for RTL styling
-      document.documentElement.classList.toggle('rtl', lang.direction === 'rtl');
-    } catch (e) {
-      console.error('Failed to apply language settings:', e);
+  const changeLanguage = useCallback((code: string) => {
+    const newLang = languages.find(l => l.code === code);
+    if (newLang) {
+      setCurrentLanguage(newLang);
+      localStorage.setItem('language', code);
     }
   }, []);
 
-  const changeLanguage = useCallback((langCode: string): void => {
-    if (!languages.some(l => l.code === langCode)) {
-      console.warn(`Language ${langCode} is not supported`);
-      return;
-    }
+  const translate = useCallback((key: string): string => {
+    const phraseTranslations = translations[key];
+    if (!phraseTranslations) return key;
     
-    try {
-      setCurrentLanguage(langCode);
-      localStorage.setItem('preferredLanguage', langCode);
-      applyLanguageSettings(langCode);
-      
-      window.dispatchEvent(new CustomEvent('languageChanged', { 
-        detail: { language: langCode } 
-      }));
-    } catch (e) {
-      console.error('Failed to change language:', e);
-    }
-  }, [applyLanguageSettings]);
+    return phraseTranslations[currentLanguage.code] || 
+           phraseTranslations.en || 
+           key;
+  }, [currentLanguage.code]);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      applyLanguageSettings(currentLanguage);
-    }
-  }, [currentLanguage, applyLanguageSettings]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'preferredLanguage' && e.newValue) {
-        setCurrentLanguage(e.newValue);
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  const getTranslationValue = useCallback((keys: string[]): TranslationValue | undefined => {
-    let value: TranslationValue = translations;
-    
-    for (const k of keys) {
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        value = value[k];
-      } else {
-        return undefined;
-      }
-    }
-    
-    return value;
-  }, []);
-
-  const translate = useCallback((key: string, params?: TranslationParams): string => {
-    try {
-      const keys = key.split('.');
-      const value = getTranslationValue(keys);
-      
-      // Get translation with fallbacks
-      let translation: string | undefined;
-      
-      if (typeof value === 'object' && value !== null) {
-        translation = value[currentLanguage] as string || value['en'] as string;
-      } else if (typeof value === 'string') {
-        translation = value;
-      }
-      
-      if (!translation) return key;
-
-      // Handle parameter substitution
-      if (params) {
-        return Object.entries(params).reduce((str, [k, v]) => {
-          return str.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
-        }, translation);
-      }
-      
-      return translation;
-    } catch (e) {
-      console.error(`Translation failed for key "${key}":`, e);
-      return key;
-    }
-  }, [currentLanguage, getTranslationValue]);
-
-  const pluralize = useCallback((key: string, count: number): string => {
-    try {
-      const translation = getTranslationValue(key.split('.'));
-      
-      if (!translation || typeof translation !== 'object') {
-        return typeof translation === 'string' ? translation : key;
-      }
-
-      const pluralForms = translation as unknown as PluralForms;
-      
-      switch (currentLanguage) {
-        case 'ar': // Arabic
-          if (count === 0) return pluralForms.zero || pluralForms.other || key;
-          if (count === 1) return pluralForms.one || pluralForms.other || key;
-          if (count === 2) return pluralForms.two || pluralForms.other || key;
-          if (count > 2 && count < 11) return pluralForms.few || pluralForms.other || key;
-          return pluralForms.other || key;
-        
-        case 'ru': // Russian
-        case 'uk': // Ukrainian
-          // Add specific rules as needed
-          break;
-      }
-      
-      // Default English-style pluralization
-      return count === 1 
-        ? pluralForms.one || pluralForms.other || key
-        : pluralForms.other || key;
-    } catch (e) {
-      console.error(`Pluralization failed for key "${key}":`, e);
-      return key;
-    }
-  }, [currentLanguage, getTranslationValue]);
-
-  return {
+  const value = useMemo(() => ({
     currentLanguage,
     changeLanguage,
-    translate,
-    languages,
-    getCurrentLanguage,
-    isRTL,
-    pluralize,
-    t: translate,
-    setLanguage: changeLanguage,
-    getAvailableLanguages: useCallback(() => languages, []),
-    isLanguageSupported: useCallback((code: string) => languages.some(l => l.code === code), []),
+    translate
+  }), [currentLanguage, changeLanguage, translate]);
+
+  // Fixed JSX syntax
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export const useLanguageTranslation = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguageTranslation must be used within a LanguageProvider');
+  }
+  return {
+    ...context,
+    languages
   };
-}; 
+};

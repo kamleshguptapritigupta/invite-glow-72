@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { Frame, Plus, Trash2 } from 'lucide-react';
+import { Frame, Plus, Trash2, Square } from 'lucide-react';
 import { BorderSettings, BorderElement } from '@/types/background';
+import { cn } from '@/lib/utils';
 
 interface BorderCustomizerProps {
   settings: BorderSettings;
@@ -90,20 +91,19 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
 
   return (
     <Card className="border border-gray-300 rounded-xl shadow-lg">
-      <CardHeader>
+      <CardHeader >
+         <div className="flex items-center justify-between">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Frame className="h-4 w-4" />
+          <Frame className="h-4 w-4 text-purple-500" />
           Border Customization
         </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-center justify-between">
-          <Label>Enable Border</Label>
-          <Switch
+        <Switch
             checked={internalSettings.enabled}
             onCheckedChange={(enabled) => updateSettings('enabled', enabled)}
           />
         </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
 
         {internalSettings.enabled && (
           <>
@@ -146,20 +146,46 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="flex items-center gap-2">Border Elements 
-                 
-                      <span className="bg-primary/10 text-primary">( {internalSettings.decorativeElements.length}/5)</span>
-                  </Label>
-                <Button
-                  size="sm"
-                  onClick={addBorderElement}
-                  disabled={internalSettings.decorativeElements.length >= 5}
-                  className="h-8"
-                >
-                  <Plus className="h-3 w-3" />
-                </Button>
-              </div>
+    <div className="flex items-center justify-between">
+  <Label className="flex items-center gap-2">
+    <Square className="h-4 w-4 text-primary" />
+    <span className="text-sm font-medium">
+      Border Elements
+      <span className={cn(
+        "ml-2 px-2 py-1 rounded-full text-xs",
+        internalSettings.decorativeElements.length === 5 
+          ? "bg-destructive/10 text-destructive" 
+          : "bg-primary/10 text-primary"
+      )}>
+        {internalSettings.decorativeElements.length}/5
+      </span>
+    </span>
+  </Label>
+
+  <Button
+    onClick={addBorderElement}
+    disabled={internalSettings.decorativeElements.length >= 5}
+    size="sm"
+    variant="outline"
+    className={cn(
+      "transition-all duration-300",
+      internalSettings.decorativeElements.length === 0 
+        ? "h-8 w-8 p-0"  // Makes it a circular icon button when empty
+        : "h-8 px-3"     // Regular size when has text
+    )}
+  >
+    {internalSettings.decorativeElements.length === 0 ? (
+      <Plus className="h-4 w-4" />
+    ) : internalSettings.decorativeElements.length >= 5 ? (
+      <span className="text-destructive">Limit Reached</span>
+    ) : (
+      <span className="flex items-center gap-1">
+        <Plus className="h-3 w-3" />
+        Add More
+      </span>
+    )}
+  </Button>
+</div>
               
               {internalSettings.decorativeElements.map((element) => (
                 <div 
@@ -200,7 +226,7 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
                 </div>
               ))}
             </div>
-          </>  
+          </>
         )}
       </CardContent>
     </Card>

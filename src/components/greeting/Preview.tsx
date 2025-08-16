@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { GreetingFormData, EventType, MediaItem } from '@/types/greeting';
 import { eventTypes } from '@/data/eventTypes';
 import ShareActions from '@/components/share/ShareActions';
-import { useLanguageTranslation } from '@/hooks/useLanguageTranslation';
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -50,6 +50,17 @@ const PreviewComponent = ({
 
   const handleMediaError = (id: string) => {
     setMediaErrors(prev => ({ ...prev, [id]: true }));
+  };
+
+  // CSS pattern generator - moved before backgroundStyle useMemo
+  const getPatternCSS = (type: string) => {
+    switch (type) {
+      case 'dots': return 'radial-gradient(circle, currentColor 1px, transparent 1px)';
+      case 'lines': return 'repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 10px)';
+      case 'squares': return 'repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 10px), repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 10px)';
+      case 'zigzag': return 'repeating-linear-gradient(135deg, currentColor 0 10px, transparent 10px 20px)';
+      default: return '';
+    }
   };
 
   // Memoized background style calculation with accessibility checks
@@ -111,24 +122,17 @@ const PreviewComponent = ({
     const baseClasses = 'gap-4 p-4';
     switch (greetingData.layout) {
       case 'grid': return `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${baseClasses}`;
-      case 'masonry': return `masonry-grid ${baseClasses}`;
+      case 'masonry': return `columns-1 sm:columns-2 lg:columns-3 break-inside-avoid ${baseClasses}`;
       case 'carousel': return `flex overflow-x-auto snap-x snap-mandatory space-x-4 pb-4 ${baseClasses}`;
       case 'stack': return `grid grid-cols-1 ${baseClasses}`;
       case 'collage': return `relative min-h-[400px] ${baseClasses}`;
+      case 'mosaic': return `grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 ${baseClasses}`;
+      case 'slideshow': return `relative overflow-hidden h-96 ${baseClasses}`;
+      case 'polaroid': return `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${baseClasses}`;
+      case 'magazine': return `grid grid-cols-12 gap-4 ${baseClasses}`;
       default: return `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${baseClasses}`;
     }
   }, [greetingData.layout]);
-
-  // CSS pattern generator
-  const getPatternCSS = (type: string) => {
-    switch (type) {
-      case 'dots': return 'radial-gradient(circle, currentColor 1px, transparent 1px)';
-      case 'lines': return 'repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 10px)';
-      case 'squares': return 'repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 10px), repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 10px)';
-      case 'zigzag': return 'repeating-linear-gradient(135deg, currentColor 0 10px, transparent 10px 20px)';
-      default: return '';
-    }
-  };
 
   // Animation variants with reduced motion support
   const textAnimationVariants: Variants = prefersReducedMotion ? {
@@ -158,6 +162,37 @@ const PreviewComponent = ({
         width: `${Math.min(mediaItem.position?.width || 300, 300)}px`,
         height: `${Math.min(mediaItem.position?.height || 200, 200)}px`,
         zIndex: mediaItem.priority || index
+      };
+    }
+
+    if (greetingData.layout === 'polaroid') {
+      return {
+        ...baseStyles,
+        width: '100%',
+        height: 'auto',
+        padding: '16px',
+        backgroundColor: 'white',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+        transform: `rotate(${(index % 2 === 0 ? 1 : -1) * (Math.random() * 6 - 3)}deg)`
+      };
+    }
+
+    if (greetingData.layout === 'magazine') {
+      const columnSpans = [4, 6, 8, 5, 7]; // Varying column spans for magazine layout
+      return {
+        ...baseStyles,
+        gridColumn: `span ${columnSpans[index % columnSpans.length]}`,
+        width: '100%',
+        height: 'auto'
+      };
+    }
+
+    if (greetingData.layout === 'mosaic') {
+      const sizes = ['col-span-1', 'col-span-2', 'row-span-2'];
+      return {
+        ...baseStyles,
+        width: '100%',
+        height: index % 3 === 0 ? '200px' : 'auto'
       };
     }
 
@@ -298,48 +333,7 @@ const PreviewComponent = ({
       role="main"
       aria-label={translate('Interactive greeting card')}
     >
-      {/* Background Video with enhanced error handling */}
-      {greetingData.videoUrl && !videoError ? (
-        <div className="fixed inset-0 overflow-hidden -z-10">
-          <video
-            ref={videoRef}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            controls
-            aria-label={translate('Background video')}
-            onError={() => setVideoError(true)}
-            onLoadedData={() => {
-              videoRef.current?.play().catch(error => {
-                console.error('Video playback failed:', error);
-                setVideoError(true);
-              });
-            }}
-            style={{
-              width: `${greetingData.videoPosition.width}px`,
-              height: `${greetingData.videoPosition.height}px`,
-              objectFit: 'cover'
-            }}
-          >
-            <source 
-              src={greetingData.videoUrl} 
-              type={`video/${greetingData.videoUrl.endsWith('.webm') ? 'webm' : 'mp4'}`} 
-            />
-            {translate('Your browser does not support HTML5 video.')}
-          </video>
-        </div>
-      ) : (
-        <div 
-          className="fixed inset-0 -z-10 bg-secondary/20 flex items-center justify-center"
-          aria-hidden={!videoError}
-        >
-          <p className="text-lg text-muted-foreground">
-            {translate('Background video unavailable')}
-          </p>
-        </div>
-      )}
+      {/* Background Video removed as requested */}
 
       {/* Background Elements - Emojis */}
       <AnimatePresence>
@@ -462,23 +456,63 @@ const PreviewComponent = ({
                   <AnimatePresence>
                     {greetingData.media
                       .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-                      .map((mediaItem, index) => (
-                        <motion.div
-                          key={mediaItem.id}
-                          className={cn(
-                            `rounded-lg shadow-md overflow-hidden bg-card/20 transition-all duration-300`,
-                            greetingData.layout === 'collage' ? 'absolute' : '',
-                            greetingData.layout === 'carousel' ? 'snap-center flex-shrink-0' : ''
-                          )}
-                          style={getMediaItemStyles(mediaItem, index)}
-                          layout={!prefersReducedMotion}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          role="group"
-                          aria-label={`${translate('Media item')} ${index + 1}`}
-                        >
+                      .map((mediaItem, index) => {
+                        const itemStyle = getMediaItemStyles(mediaItem, index);
+                        
+                        if (greetingData.layout === 'slideshow') {
+                          return (
+                            <motion.div
+                              key={`${mediaItem.id}-${index}`}
+                              className={`absolute inset-0 ${
+                                index === 0 ? 'opacity-100' : 'opacity-0'
+                              } transition-opacity duration-1000`}
+                              style={itemStyle}
+                              animate={{
+                                opacity: [0, 1, 1, 0],
+                              }}
+                              transition={{
+                                duration: 4,
+                                delay: index * 4,
+                                repeat: Infinity
+                              }}
+                            >
+                              {mediaItem.type === 'image' ? (
+                                <img
+                                  src={mediaItem.url}
+                                  alt={`Slideshow image ${index + 1}`}
+                                  className="w-full h-full object-cover rounded-lg"
+                                  onError={() => handleMediaError(mediaItem.id)}
+                                />
+                              ) : (
+                                <video
+                                  src={mediaItem.url}
+                                  className="w-full h-full object-cover rounded-lg"
+                                  controls
+                                  muted
+                                  onError={() => handleMediaError(mediaItem.id)}
+                                />
+                              )}
+                            </motion.div>
+                          );
+                        }
+
+                        return (
+                          <motion.div
+                            key={mediaItem.id}
+                            className={cn(
+                              `rounded-lg shadow-md overflow-hidden bg-card/20 transition-all duration-300`,
+                              greetingData.layout === 'collage' ? 'absolute' : '',
+                              greetingData.layout === 'carousel' ? 'snap-center flex-shrink-0' : ''
+                            )}
+                            style={itemStyle}
+                            layout={!prefersReducedMotion}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            role="group"
+                            aria-label={`${translate('Media item')} ${index + 1}`}
+                          >
                           {mediaErrors[mediaItem.id] ? (
                             <div 
                               className="w-full h-full flex items-center justify-center bg-destructive/10"
@@ -509,8 +543,9 @@ const PreviewComponent = ({
                               onError={() => handleMediaError(mediaItem.id)}
                             />
                           )}
-                        </motion.div>
-                      ))}
+                         </motion.div>
+                        );
+                      })}
                   </AnimatePresence>
                 </div>
               )}

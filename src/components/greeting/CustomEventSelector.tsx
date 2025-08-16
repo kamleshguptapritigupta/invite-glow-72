@@ -95,7 +95,7 @@ const CustomEventSelector = ({
       <CardHeader>
         <CardTitle className="text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Edit className="h-4 w-4" />
+            <Edit className="h-4 w-4 text-purple-500" />
             Event Selection
           </div>
           <Button

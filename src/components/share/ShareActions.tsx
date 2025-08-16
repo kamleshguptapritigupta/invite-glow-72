@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Share2, FileImage, FileText, Copy, QrCode,CheckCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useLanguageTranslation } from '@/hooks/useLanguageTranslation';
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 
 
 interface ShareActionsProps {
@@ -300,14 +300,19 @@ const saveAsPDF = async () => {
         </Button>
 
 
- <Button
-            onClick={generateQRCode} 
-            disabled={isGenerating}
-            className="flex items-center gap-1 px-3 md:px-4 bg-green-600 hover:bg-green-700"
-          >
-           <QrCode className="h-4 w-4" />
-                 <span className="hidden sm:inline whitespace-nowrap"> QR Code</span>
-          </Button>
+ <Button onClick={copyShareLink} className="flex items-center gap-1 px-3 md:px-4 bg-green-600 hover:bg-green-700">
+                {isCopied ? (
+              <>
+                <CheckCircle className="h-4 w-4 text-green-500" />
+               <span className="hidden sm:inline whitespace-nowrap"> Copied! </span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                <span className="hidden sm:inline whitespace-nowrap">Copy Link</span>
+              </>
+            )}
+              </Button>
 
 
                 <Button 

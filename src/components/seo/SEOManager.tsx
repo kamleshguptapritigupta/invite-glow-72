@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useLanguageTranslation } from '@/hooks/useLanguageTranslation';
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import { generateAdvancedSEO, updateAdvancedPageSEO } from '@/utils/seoEnhanced';
 
-interface SEOManagerProps {
+interface SEOManagerProps { 
   title?: string;
   description?: string;
   eventType?: string;
@@ -29,7 +29,8 @@ const SEOManager = ({
       ? customEventName.toLowerCase().replace(/\s+/g, '-')
       : eventType;
 
-    const seoData = generateAdvancedSEO(seoEventType, currentLanguage);
+    //const seoData = generateAdvancedSEO(seoEventType, currentLanguage);
+    const seoData = generateAdvancedSEO(seoEventType, currentLanguage.code);
 
     // Override with custom title/description if provided
     if (title) seoData.title = title;

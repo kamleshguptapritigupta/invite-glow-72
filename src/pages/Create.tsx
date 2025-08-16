@@ -12,13 +12,10 @@ import { useToast } from '@/hooks/use-toast';
 import { GreetingFormData, MediaItem, TextContent, EventType } from '@/types/greeting';
 import { BorderSettings } from '@/types/background';
 import { eventTypes, animationStyles } from '@/data/eventTypes';
-import CustomEventSelector from '@/components/greeting/CustomEventSelector';
-import AdvancedMediaUploader from '@/components/greeting/AdvancedMediaUploader';
-import AdvancedTextEditor from '@/components/greeting/AdvancedTextEditor';
-import LayoutSelector from '@/components/greeting/LayoutSelector';
-import BackgroundCustomizer from '@/components/greeting/BackgroundCustomizer';
-import EmojiSelector from '@/components/greeting/EmojiSelector';
-import BorderCustomizer from '@/components/greeting/BorderCustomizer';
+import BasicDetailsForm from '@/components/greeting/form/BasicDetailsForm';
+import ContentForm from '@/components/greeting/form/ContentForm';
+import CustomizationForm from '@/components/greeting/form/CustomizationForm';
+import ActionsForm from '@/components/greeting/form/ActionsForm';
 import LanguageSelector from '@/components/language/LanguageSelector';
 import ShareActions from '@/components/share/ShareActions';
 import Preview from '@/components/greeting/Preview';
@@ -26,7 +23,7 @@ import SEOManager from '@/components/seo/SEOManager';
 import BackButton from '@/components/ui/back-button';
 import { Palette, Eye, Wand2, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguageTranslation } from '@/hooks/useLanguageTranslation';
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 
 
 const Create = () => {
@@ -68,8 +65,6 @@ const Create = () => {
 
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [customEvent, setCustomEvent] = useState<EventType | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-  const [showVisualEditor, setShowVisualEditor] = useState(false);
   // Add to your existing state declarations
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -158,12 +153,31 @@ useEffect(() => {
         params.append('texts', JSON.stringify(value));
       } else if (key === 'media' && Array.isArray(value)) {
         params.append('media', JSON.stringify(value));
+      } else if (key === 'emojis' && Array.isArray(value)) {
+        params.append('emojis', JSON.stringify(value));
+      } else if (key === 'backgroundSettings') {
+        params.append('backgroundSettings', JSON.stringify(value));
+      } else if (key === 'borderSettings') {
+        params.append('borderSettings', JSON.stringify(value));
       } else if (key === 'videoPosition') {
         params.append('videoPosition', JSON.stringify(value));
       } else if (value && typeof value === 'string') {
         params.append(key, value);
       }
     });
+
+    // Add custom event details if it's a custom event
+    if (formData.eventType === 'custom' && customEvent) {
+      params.append('customEventName', customEvent.label);
+      params.append('customEventEmoji', customEvent.emoji);
+    }
+    // Also handle if customEventName is directly in formData
+    if (formData.customEventName) {
+      params.append('customEventName', formData.customEventName);
+    }
+    if (formData.customEventEmoji) {
+      params.append('customEventEmoji', formData.customEventEmoji);
+    }
 
     const shareableURL = `${window.location.origin}/?${params.toString()}`;
     navigator.clipboard.writeText(shareableURL);
@@ -191,6 +205,12 @@ useEffect(() => {
         params.append('texts', JSON.stringify(value));
       } else if (key === 'media' && Array.isArray(value)) {
         params.append('media', JSON.stringify(value));
+      } else if (key === 'emojis' && Array.isArray(value)) {
+        params.append('emojis', JSON.stringify(value));
+      } else if (key === 'backgroundSettings') {
+        params.append('backgroundSettings', JSON.stringify(value));
+      } else if (key === 'borderSettings') {
+        params.append('borderSettings', JSON.stringify(value));
       } else if (key === 'videoPosition') {
         params.append('videoPosition', JSON.stringify(value));
       } else if (value && typeof value === 'string') {
@@ -198,8 +218,21 @@ useEffect(() => {
       }
     });
 
+    // Add custom event details if it's a custom event
+    if (formData.eventType === 'custom' && customEvent) {
+      params.append('customEventName', customEvent.label);
+      params.append('customEventEmoji', customEvent.emoji);
+    }
+    // Also handle if customEventName is directly in formData
+    if (formData.customEventName) {
+      params.append('customEventName', formData.customEventName);
+    }
+    if (formData.customEventEmoji) {
+      params.append('customEventEmoji', formData.customEventEmoji);
+    }
+
     
-    navigate(`/?${formData.toString()}`);
+    navigate(`/?${params.toString()}`);
     
   };
 
@@ -240,137 +273,53 @@ useEffect(() => {
 
 
             <CardContent className="space-y-6">
-
-              {/* Custom Event Selector */}
-              <CustomEventSelector
-                selectedEvent={formData.eventType}
+              <BasicDetailsForm
+                eventType={formData.eventType}
+                senderName={formData.senderName}
+                receiverName={formData.receiverName}
                 customEvent={customEvent}
                 onEventChange={(value) => {
                   handleInputChange('eventType', value);
-                  // Also update selectedEvent state
                   const event = [...eventTypes, ...(customEvent ? [customEvent] : [])]
                     .find(e => e.value === value);
                   setSelectedEvent(event || null);
                 }}
+                onInputChange={handleInputChange}
                 onCustomEventCreate={(newEvent) => {
-                   setCustomEvent(newEvent);
-                  // Update formData with custom event details
-                  // setFormData(prev => ({
-                  //   ...prev,
-                  //   eventType: newEvent.value,
-                  //   customEventName: newEvent.label,
-                  //   customEventEmoji: newEvent.emoji,
-                  //   theme: newEvent.theme || ''
-                  // }));
-                  
-                   handleInputChange('eventType', newEvent.value);
+                  setCustomEvent(newEvent);
+                  handleInputChange('eventType', newEvent.value);
                   setSelectedEvent(newEvent);
                 }}
               />
 
               <Separator />
 
-              {/* Names */}
-              <div className="grid md:grid-cols-2 gap-4 p-6 border border-green-300 rounded-xl shadow-lg">
-                <div className="space-y-2">
-                  <Label htmlFor="senderName">Your Name (optional)</Label>
-                  <Input
-                    id="senderName"
-                    value={formData.senderName}
-                    onChange={(e) => handleInputChange('senderName', e.target.value)}
-                    placeholder="Your name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="receiverName">Receiver's Name (optional)</Label>
-                  <Input
-                    id="receiverName"
-                    value={formData.receiverName}
-                    onChange={(e) => handleInputChange('receiverName', e.target.value)}
-                    placeholder="Recipient's name"
-                  />
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Advanced Text Editor (up to 10 texts) */}
-              <AdvancedTextEditor
+              <ContentForm
                 texts={formData.texts}
-                onChange={handleTextChange}
-              />
-
-              <Separator />
-
-              {/* Advanced Media Uploader (up to 20 images/videos) */}
-              <AdvancedMediaUploader
                 media={formData.media}
-                onChange={handleMediaChange}
-              />
-
-              <Separator />
-
-              {/* Emoji Decorator */}
-              <EmojiSelector
                 emojis={formData.emojis}
-                onChange={(emojis) => setFormData(prev => ({ ...prev, emojis }))}
-              />
-
-        
-
-              <Separator />
-
-              {/* Background Customizer */}
-              <BackgroundCustomizer
-                settings={formData.backgroundSettings}
-                onChange={(settings) => setFormData(prev => ({ ...prev, backgroundSettings: settings }))}
+                onTextChange={handleTextChange}
+                onMediaChange={handleMediaChange}
+                onEmojiChange={(emojis) => setFormData(prev => ({ ...prev, emojis }))}
               />
 
               <Separator />
 
-              {/* Border Customizer */}
-              <BorderCustomizer
-                settings={formData.borderSettings}
-                onChange={(borderSettings) => setFormData(prev => ({ ...prev, borderSettings }))}
-              />
-
-              <Separator />
-
-              {/* Layout & Animation Selector */}
-              <LayoutSelector
+              <CustomizationForm
+                backgroundSettings={formData.backgroundSettings}
+                borderSettings={formData.borderSettings}
                 layout={formData.layout}
                 animationStyle={formData.animationStyle}
+                onBackgroundChange={(settings) => setFormData(prev => ({ ...prev, backgroundSettings: settings }))}
+                onBorderChange={(borderSettings) => setFormData(prev => ({ ...prev, borderSettings }))}
                 onLayoutChange={(layout) => handleInputChange('layout', layout)}
                 onAnimationChange={(animation) => handleInputChange('animationStyle', animation)}
               />
 
-              <Separator />
-          
-              <div className="flex flex-col items-center gap-4 pt-8">
-                  <ShareActions greetingData={formData} />
-                      
-                    <Button
-                      size="lg"
-                      onClick={generateShareableURL}
-                      className="relative overflow-hidden group animate-zoom-in shadow-2xl hover:shadow-primary/30 transition-all duration-500 bg-gradient-to-r from-pink-500 to-violet-500 hover:bg-gradient-to-l"
-                    >
-                      <span className="relative z-10 flex items-center">
-                        <span className="mr-3 text-2xl group-hover:animate-spin">✨</span>
-                        <span>Generate Share Link</span>
-                      </span>
-                      {/* Button shine effect */}
-                        <span className="absolute top-0 left-1/2 w-20 h-full bg-white/30 -skew-x-12 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:animate-shine transition-opacity duration-700"></span>
-                        
-                        {/* Border elements */}
-                        <span className="absolute inset-0 border-2 border-transparent group-hover:border-white/30 rounded-lg 
-                                        group-hover:rounded-none transition-all duration-300 ease-[cubic-bezier(0.65,0,0.35,1)]" />
-                        
-                        {/* Lightning border animation */}
-                        <span className="absolute inset-0 border-2 border-transparent 
-                                        group-hover:border-[length:400%_400%] group-hover:bg-[length:400%_400%]
-                                        group-hover:animate-lightning-rounding" />
-                      </Button>
-              </div>
+              <ActionsForm
+                greetingData={formData}
+                onGenerateLink={generateShareableURL}
+              />
             </CardContent>
           </Card>
 

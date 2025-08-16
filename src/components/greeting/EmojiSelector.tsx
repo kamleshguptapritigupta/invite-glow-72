@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Smile } from 'lucide-react';
 import { EmojiItem } from '@/types/background';
+import { cn } from '@/lib/utils';
 
 interface EmojiSelectorProps {
   emojis: EmojiItem[];
@@ -55,21 +56,38 @@ const EmojiSelector = ({ emojis, onChange }: EmojiSelectorProps) => {
   return (
     <Card className="border border-red-300 shadow-lg rounded-xl overflow-hidden">
       <CardHeader className=" py-3">
-        <CardTitle className="text-sm flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Smile className="h-4 w-4" />
-            Decorative Emojis <span className="bg-primary/10 text-primary">({emojis.length})</span>
-          </div>
-          <Button
-            onClick={() => setShowPicker(!showPicker)}
-            size="sm"
-            variant="outline"
-            // className="bg-primary/50 hover:bg-primary/80 text-white"
-          >
-            <Plus className="h-3 w-3 mr-1" />
-            Add Emoji
-          </Button>
-        </CardTitle>
+       
+       <CardTitle className="flex items-center justify-between">
+  <div className="flex items-center gap-2">
+    <Smile className="h-4 w-4 text-primary" />
+    <span className="text-sm font-medium">
+      Decorative Emojis
+      <span className={cn(
+        "ml-2 px-2 py-1 rounded-full text-xs",
+        emojis.length === 10 ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
+      )}>
+        {emojis.length}/10
+      </span>
+    </span>
+  </div>
+<Button
+  onClick={() => setShowPicker(!showPicker)}
+  disabled={emojis.length >= 10}
+  size="sm"
+  variant="outline"
+  className="transition-all duration-300 h-8 px-3"
+>
+  {emojis.length >= 10 ? (
+    <span className="text-destructive">Limit Reached</span>
+  ) : (
+    <span className="flex items-center gap-1">
+      <Plus className="h-3 w-3" />
+      {emojis.length === 0 ? "Add Emoji" : "Add More"}
+    </span>
+  )}
+</Button>
+</CardTitle>
+
       </CardHeader>
 
       <CardContent className="space-y-4">

@@ -337,7 +337,7 @@ const addMedia = (type: 'image' | 'video') => {
         <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 xs:gap-4">
           <div className="flex items-center gap-2 min-w-0">
             <div className="relative shrink-0">
-              <Image className="h-4 w-4" />
+              <Image className="h-4 w-4 text-purple-500" />
               <Video className="h-3 w-3 absolute -bottom-1 -right-1 bg-background rounded-full p-0.5" />
             </div>
             <span className="text-sm font-medium truncate">Media Content</span>
