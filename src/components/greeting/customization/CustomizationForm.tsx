@@ -1,8 +1,8 @@
 import { Separator } from '@/components/ui/separator';
 import { BorderSettings } from '@/types/background';
-import BackgroundCustomizer from '../BackgroundCustomizer';
-import BorderCustomizer from '../BorderCustomizer';
-import LayoutSelector from '../LayoutSelector';
+import BackgroundCustomizer from './BackgroundCustomizer';
+import BorderCustomizer from './BorderCustomizer/BorderCustomizer';
+import LayoutSelector from './LayoutSelector';
 
 interface CustomizationFormProps {
   backgroundSettings: any;

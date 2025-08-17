@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Frame, Plus, Trash2, Square } from 'lucide-react';
 import { BorderSettings, BorderElement } from '@/types/background';
 import { cn } from '@/lib/utils';
+import ElementPicker from "./ElementPicker";
 
 interface BorderCustomizerProps {
-  settings: BorderSettings;
+  settings: BorderSettings; 
   onChange: (settings: BorderSettings) => void;
 }
 
@@ -187,16 +188,18 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
   </Button>
 </div>
               
-              {internalSettings.decorativeElements.map((element) => (
-                <div 
-                  key={element.id} 
+             
+             
+             {internalSettings.decorativeElements.map((element) => (
+                <div
+                  key={element.id}
                   className="border rounded p-3 space-y-2 hover:bg-gray-50 transition-colors"
-                  onClick={(e) => e.stopPropagation()} // Prevent event bubbling
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex items-center justify-between">
                     <Select
                       value={element.type}
-                      onValueChange={(type) => updateBorderElement(element.id, 'type', type)}
+                      onValueChange={(type) => updateBorderElement(element.id, "type", type)}
                     >
                       <SelectTrigger className="w-24 h-8">
                         <SelectValue />
@@ -215,14 +218,21 @@ const BorderCustomizer = ({ settings, onChange }: BorderCustomizerProps) => {
                       <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
-                  
-                  <Input
-                    value={element.content}
-                    onChange={(e) => updateBorderElement(element.id, 'content', e.target.value)}
-                    placeholder={element.type === 'emoji' ? 'Enter emoji' : 'Enter image URL'}
-                    className="text-xs"
-                    onClick={(e) => e.stopPropagation()}
-                  />
+
+                  {/* Input + Element Picker */}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={element.content}
+                      onChange={(e) => updateBorderElement(element.id, "content", e.target.value)}
+                      placeholder={element.type === "emoji" ? "Enter emoji" : "Enter image URL"}
+                      className="text-xs"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <ElementPicker
+                      type={element.type}
+                      onSelect={(val) => updateBorderElement(element.id, "content", val)}
+                    />
+                  </div>
                 </div>
               ))}
             </div>

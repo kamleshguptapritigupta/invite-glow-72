@@ -1,8 +1,8 @@
 import { Separator } from '@/components/ui/separator';
 import { TextContent, MediaItem } from '@/types/greeting';
-import AdvancedTextEditor from '../AdvancedTextEditor';
-import AdvancedMediaUploader from '../AdvancedMediaUploader';
-import EmojiSelector from '../EmojiSelector';
+import AdvancedTextEditor from './textEditor/AdvancedTextEditor';
+import AdvancedMediaUploader from './mediaUploader/AdvancedMediaUploader';
+import EmojiSelector from './EmojiSelector';
 
 interface ContentFormProps {
   texts: TextContent[];

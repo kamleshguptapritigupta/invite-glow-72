@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { EventType } from '@/types/greeting';
-import CustomEventSelector from '../CustomEventSelector';
+import CustomEventSelector from './CustomEventSelector';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 
 interface BasicDetailsFormProps {

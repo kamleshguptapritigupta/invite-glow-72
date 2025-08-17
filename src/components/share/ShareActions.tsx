@@ -7,14 +7,15 @@ import { Share2, FileImage, FileText, Copy, QrCode,CheckCircle } from 'lucide-re
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
-
+import type { EventType } from '@/types/greeting';
 
 interface ShareActionsProps {
   greetingData: any;
   greetingRef?: React.RefObject<HTMLDivElement>;
+  selectedEvent?: EventType | null; // <-- NEW prop
 }
 
-const ShareActions = ({ greetingData, greetingRef }: ShareActionsProps) => {
+const ShareActions = ({ greetingData, greetingRef, selectedEvent }: ShareActionsProps) => {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -23,19 +24,59 @@ const ShareActions = ({ greetingData, greetingRef }: ShareActionsProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
 
+  // Build a cleaned payload that ensures arrays/objects are handled properly
+  const buildPayloadForSharing = (gData: any) => {
+    return {
+      ...gData,
+      texts: gData.texts || [],
+      media: gData.media || [],
+      emojis: gData.emojis || []
+    };
+  };
+
+  // Robust URL builder: include custom event name/emoji from either form data OR selectedEvent fallback
   const generateShareableURL = () => {
+    const payload = buildPayloadForSharing(greetingData || {});
     const params = new URLSearchParams();
-    Object.entries(greetingData).forEach(([key, value]) => {
-      if (value && typeof value === 'string') {
-        params.append(key, value);
-      } else if (Array.isArray(value)) {
-        params.append(key, JSON.stringify(value));
-      } else if (typeof value === 'object') {
-        params.append(key, JSON.stringify(value));
+
+    // Put everything (arrays/objects JSON-stringified)
+    Object.entries(payload).forEach(([k, v]) => {
+      if (v === undefined || v === null) return;
+      if (Array.isArray(v) || typeof v === 'object') {
+        params.set(k, JSON.stringify(v));
+      } else {
+        params.set(k, String(v));
       }
     });
+
+    // Fallback sources for custom event name & emoji:
+    // priority: greetingData.customEventName -> greetingData.customEvent?.label -> selectedEvent.label
+    const customName =
+      greetingData?.customEventName ||
+      (greetingData?.customEvent && greetingData.customEvent.label) ||
+      (selectedEvent && selectedEvent.category === 'custom' && selectedEvent.label) ||
+      '';
+
+    const customEmoji =
+      greetingData?.customEventEmoji ||
+      (greetingData?.customEvent && greetingData.customEvent.emoji) ||
+      (selectedEvent && selectedEvent.category === 'custom' && selectedEvent.emoji) ||
+      '';
+
+    if (customName) {
+      params.set('customEventName', String(customName));
+      if (customEmoji) params.set('customEventEmoji', String(customEmoji));
+    }
+
+    // If eventType is missing but we can infer custom, set eventType=custom
+    if (!params.has('eventType') && customName) {
+      params.set('eventType', 'custom');
+    }
+
     return `${window.location.origin}/?${params.toString()}`;
   };
+
+  // ... (rest of component: copyShareLink, shareToSocialMedia etc. - unchanged)
 
   const copyShareLink = () => {
     const shareableURL = generateShareableURL();
@@ -47,6 +88,7 @@ const ShareActions = ({ greetingData, greetingRef }: ShareActionsProps) => {
       description: "Greeting link has been copied to your clipboard.",
     });
   };
+
 
   const shareToSocialMedia = (platform: string) => {
     const shareableURL = generateShareableURL();

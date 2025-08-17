@@ -3,13 +3,15 @@ import { Separator } from '@/components/ui/separator';
 import { GreetingFormData } from '@/types/greeting';
 import ShareActions from '../../share/ShareActions';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
+import { EventType } from '@/types/greeting';
 
 interface ActionsFormProps {
   greetingData: GreetingFormData;
   onGenerateLink: () => void;
+  selectedEvent?: EventType | null;
 }
+const ActionsForm = ({ greetingData, onGenerateLink, selectedEvent }: ActionsFormProps) => {
 
-const ActionsForm = ({ greetingData, onGenerateLink }: ActionsFormProps) => {
   const { translate } = useLanguageTranslation();
 
   const generateAdvancedShareURL = () => {
@@ -34,13 +36,14 @@ const ActionsForm = ({ greetingData, onGenerateLink }: ActionsFormProps) => {
       }
     });
 
-    // Add custom event details if it's a custom event
-    if (greetingData.eventType === 'custom' && greetingData.customEventName) {
-      params.append('customEventName', greetingData.customEventName);
+   // Always include custom event fields when present (supports cases where eventType might not be 'custom')
+    if (greetingData.customEventName) {
+      params.set('customEventName', String(greetingData.customEventName));
       if (greetingData.customEventEmoji) {
-        params.append('customEventEmoji', greetingData.customEventEmoji);
+        params.set('customEventEmoji', String(greetingData.customEventEmoji));
       }
     }
+
 
     const shareableURL = `${window.location.origin}/?${params.toString()}`;
     navigator.clipboard.writeText(shareableURL);
@@ -53,10 +56,11 @@ const ActionsForm = ({ greetingData, onGenerateLink }: ActionsFormProps) => {
       <Separator />
       
       <div className="flex flex-col items-center gap-4 pt-8">
-        <ShareActions greetingData={greetingData} />
+        <ShareActions greetingData={greetingData} selectedEvent={selectedEvent} />
+
             
         <Button
-          size="lg"
+          size="lg" 
           onClick={() => {
             generateAdvancedShareURL();
             onGenerateLink();

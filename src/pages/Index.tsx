@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TypingText from '../components/reusableTypingText/TypingText'
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import LandingPage from '@/components/landingPage/LandingPage'
-import Preview from '@/components/greeting/Preview';
+import Preview from '@/components/preview/Preview';
 import { FloatingButton } from '@/components/share/CustomizeAndShare'; // Adjust import path
 
 
@@ -23,68 +23,78 @@ const Index = () => {
   const greetingRef = useRef<HTMLDivElement>(null);
   const { translate } = useLanguageTranslation();
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    
-    if (params.toString()) {
-      // Extract greeting data from URL parameters with new structure
-      const data: GreetingFormData = {
-        eventType: params.get('eventType') || '',
-        senderName: params.get('senderName') || '',
-        receiverName: params.get('receiverName') || '',
-        customEventName: params.get('customEventName') || '', // Add custom event name
-        customEventEmoji: params.get('customEventEmoji') || '',
-        texts: params.get('texts') ? JSON.parse(params.get('texts')!) : [],
-        media: params.get('media') ? JSON.parse(params.get('media')!) : [],
-        videoUrl: params.get('videoUrl') || '',
-        videoPosition: params.get('videoPosition') ? JSON.parse(params.get('videoPosition')!) : { width: 400, height: 300 },
-        animationStyle: params.get('animationStyle') || 'fade',
-        
-        layout: (params.get('layout') as any) || 'grid',
-        theme: params.get('theme') || '',
-        backgroundSettings: params.get('backgroundSettings') ? JSON.parse(params.get('backgroundSettings')!) : {
-          color: '#ffffff',
-          gradient: { enabled: false, colors: ['#ffffff', '#000000'], direction: 'to right' },
-          animation: { enabled: false, type: 'stars', speed: 3, intensity: 50 },
-          pattern: { enabled: false, type: 'dots', opacity: 20 }
-        },
-        emojis: params.get('emojis') ? JSON.parse(params.get('emojis')!) : [],
-        borderSettings: params.get('borderSettings') ? JSON.parse(params.get('borderSettings')!) : {
-          enabled: false,
-          style: 'solid',
-          width: 2,
-          color: '#000000',
-          radius: 0,
-          animation: { enabled: false, type: 'none', speed: 3 },
-          elements: [],
-          decorativeElements: []
-        }
-      };
-      
-      setGreetingData(data);
-      
-      // Handle both predefined and custom events
+useEffect(() => {
+  const params = new URLSearchParams(location.search);
 
-      if (data.eventType === 'custom') {
-        // Create custom event object with proper parameter handling
-        const customEventName = params.get('customEventName') || data.customEventName || 'Custom Event';
-        const customEventEmoji = params.get('customEventEmoji') || data.customEventEmoji || '🎉';
-        setCurrentEvent({
-          value: 'custom',
-          emoji: customEventEmoji,
-          label: customEventName,
-          defaultMessage: data.texts[0]?.content || 'Wishing you a wonderful celebration!',
-          theme: data.theme || '',
-          category: 'custom'
-        });
-      } else {
-        // Find predefined event type
-        const event = eventTypes.find(e => e.value === data.eventType);
-        setCurrentEvent(event || null);
-      }
+  if (!params.toString()) return;
+
+  // Safe parse helper
+  const safeJsonParse = (value: string | null) => {
+    if (!value) return undefined;
+    try {
+      return JSON.parse(value);
+    } catch {
+      return undefined;
     }
-  }, [location.search]);
-  
+  };
+
+  const data: GreetingFormData = {
+    eventType: params.get('eventType') || '',
+    customEventName: params.get('customEventName') || '',
+    customEventEmoji: params.get('customEventEmoji') || '',
+    senderName: params.get('senderName') || '',
+    receiverName: params.get('receiverName') || '',
+    texts: safeJsonParse(params.get('texts')) || [],
+    media: safeJsonParse(params.get('media')) || [],
+    videoUrl: params.get('videoUrl') || '',
+    videoPosition: safeJsonParse(params.get('videoPosition')) || { width: 400, height: 300 },
+    animationStyle: params.get('animationStyle') || 'fade',
+    layout: (params.get('layout') as any) || 'grid',
+    theme: params.get('theme') || '',
+    backgroundSettings: safeJsonParse(params.get('backgroundSettings')) || {
+      color: '#ffffff',
+      gradient: { enabled: false, colors: ['#ffffff', '#000000'], direction: 'to right' },
+      animation: { enabled: false, type: 'stars', speed: 3, intensity: 50 },
+      pattern: { enabled: false, type: 'dots', opacity: 20 }
+    },
+    emojis: safeJsonParse(params.get('emojis')) || [],
+    borderSettings: safeJsonParse(params.get('borderSettings')) || {
+      enabled: false,
+      style: 'solid',
+      width: 2,
+      color: '#000000',
+      radius: 0,
+      animation: { enabled: false, type: 'none', speed: 3 },
+      elements: [],
+      decorativeElements: []
+    }
+  };
+
+  // If a customEventName is present but eventType is empty, mark eventType as custom
+if ((!data.eventType || data.eventType === '') && data.customEventName) {
+  data.eventType = 'custom';
+}
+
+  setGreetingData(data);
+
+  // Decide currentEvent: custom (if customEventName present) OR predefined lookup
+  const paramCustomName = params.get('customEventName') || data.customEventName;
+  if (paramCustomName) {
+    const customEventEmoji = params.get('customEventEmoji') || data.customEventEmoji || '🎉';
+    setCurrentEvent({
+      value: 'custom',
+      emoji: customEventEmoji,
+      label: paramCustomName,
+      defaultMessage: data.texts[0]?.content || 'Wishing you a wonderful celebration!',
+      theme: data.theme || '',
+      category: 'custom'
+    });
+  } else {
+    const event = eventTypes.find(e => e.value === data.eventType);
+    setCurrentEvent(event || null);
+  }
+}, [location.search]);
+
   // Generate background classes based on settings
   const getBackgroundClasses = () => {
     if (!greetingData?.backgroundSettings) return 'bg-gradient-to-br from-primary/10 via-background to-secondary/20';
@@ -122,26 +132,23 @@ const Index = () => {
   };
 
   // Show greeting if data exists
-  if (greetingData && greetingData.eventType) {
-
-return (
-      <>
-        <SEOManager 
-          title={`${currentEvent?.label || 'Greeting'} for ${greetingData.receiverName || 'You'}`}
-          description={greetingData.texts[0]?.content || currentEvent?.defaultMessage || ''}
-        />
-        <Preview 
-          greetingData={greetingData}
-          selectedEvent={currentEvent}
-          showVisualEditor={false}
-        />
-
-        <FloatingButton />
-        
-      </>
-    );
-
-  }
+ // new — render if we have either eventType or customEventName
+if (greetingData && (greetingData.eventType || greetingData.customEventName)) {
+  return (
+    <>
+      <SEOManager 
+        title={`${currentEvent?.label || 'Greeting'} for ${greetingData.receiverName || 'You'}`}
+        description={greetingData.texts?.[0]?.content || currentEvent?.defaultMessage || ''}
+      />
+      <Preview 
+        greetingData={greetingData}
+        selectedEvent={currentEvent}
+        showVisualEditor={false}
+      />
+      <FloatingButton />
+    </>
+  );
+}
 
   // Show landing page if no greeting data
   return (

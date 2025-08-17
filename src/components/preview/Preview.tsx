@@ -568,12 +568,12 @@ const PreviewComponent = ({
               )}
 
               {/* Share Actions */}
-           <div 
+           <div  
                 className="flex flex-col items-center gap-4 m-4" 
                 role="group" 
                 aria-label={translate('Sharing options')}
               >
-                   <ShareActions greetingData={greetingData} greetingRef={greetingRef} />
+                   <ShareActions greetingData={greetingData} greetingRef={greetingRef} selectedEvent={selectedEvent} />
            
             </div>
             </div>
