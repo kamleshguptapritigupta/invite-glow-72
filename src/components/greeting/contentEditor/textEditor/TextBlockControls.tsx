@@ -59,16 +59,18 @@ export default function TextBlockControls({ text, onUpdate }: Props) {
         <div className="p-3 border rounded">
           <Label className="text-xs text-muted-foreground">Preview:</Label>
           <div
-            style={{
-              fontSize: text.style.fontSize,
-              fontWeight: text.style.fontWeight,
-              color: text.style.color,
-              textAlign: text.style.textAlign
-            }}
-            className="mt-1"
-          >
-            {text.content}
-          </div>
+  style={{
+    fontSize: text.style.fontSize,
+    fontWeight: text.style.fontWeight,
+    color: text.style.color,
+    textAlign: text.style.textAlign,
+    animation: text.animation ? `${text.animation} 1.5s ease-in-out infinite` : undefined
+  }}
+  className="mt-1"
+>
+  {text.content}
+</div>
+
         </div>
       )}
 
