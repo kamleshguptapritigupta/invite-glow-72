@@ -116,7 +116,7 @@ const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false
       <AnimatePresence mode="wait">
         {greetingData.media.map((mediaItem, index) => {
           const isCollage = greetingData.layout === 'collage';
-          const position = isCollage ? getCollagePosition(index) : {};
+          const collagePosition = isCollage ? getCollagePosition(index) : null;
           const frameClass = getFrameStyle(index);
           const animation = animationVariants[mediaItem.animation as keyof typeof animationVariants] || animationVariants.fadeIn;
 
@@ -128,11 +128,12 @@ const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false
                 frameClass,
                 isCollage && "absolute max-w-xs"
               )}
-              style={isCollage ? {
-                ...position,
+              style={isCollage && collagePosition ? {
+                top: collagePosition.top,
+                left: collagePosition.left,
                 width: mediaItem.position?.width || 300,
                 height: mediaItem.position?.height || 200,
-                transform: `rotate(${position.rotate}) translateZ(0)`,
+                transform: `rotate(${collagePosition.rotate}) translateZ(0)`,
                 zIndex: mediaItem.priority || index
               } : {
                 width: mediaItem.position?.width || 'auto',

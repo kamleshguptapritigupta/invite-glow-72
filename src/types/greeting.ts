@@ -10,20 +10,18 @@ export interface EventType {
   category?: 'birthday' | 'religious' | 'national' | 'seasonal' | 'personal' | 'special' | 'custom';
 }
 
-export interface MediaItem {
+export interface TextContent {
   id: string;
-  url: string;
-  type: 'image' | 'video';
-  position: {
-    width: number;
-    height: number;
+  content: string;
+  position?: { x: number; y: number };
+  style: {
+    fontSize: string;
+    fontWeight: string;
+    color: string;
+    textAlign: 'left' | 'center' | 'right';
   };
   animation: string;
-  priority: number;
-  fileType?: string; 
-  textOverlays?: TextOverlay[];
 }
-
 
 export interface TextOverlay {
   id: string;
@@ -34,19 +32,26 @@ export interface TextOverlay {
     fontWeight: string;
     color: string;
     textAlign: 'left' | 'center' | 'right';
+    backgroundColor?: string;
+    padding?: string;
+    borderRadius?: string;
   };
 }
 
-export interface TextContent {
+export interface MediaItem {
   id: string;
-  content: string;
-  style: {
-    fontSize: string;
-    fontWeight: string;
-    color: string;
-    textAlign: 'left' | 'center' | 'right';
+  url: string;
+  type: 'image' | 'video';
+  position: {
+    width: number;
+    height: number;
+    x?: number;
+    y?: number;
   };
   animation: string;
+  priority: number;
+  fileType?: string; 
+  textOverlays?: TextOverlay[];
 }
 
 export interface GreetingFormData {

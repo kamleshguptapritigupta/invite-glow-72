@@ -46,7 +46,7 @@ const DraggableMediaItem: React.FC<DraggableMediaItemProps> = ({
   const addTextOverlay = () => {
     const newOverlay = {
       id: Date.now().toString(),
-      text: 'New Text',
+      content: 'New Text',
       position: { x: 10, y: 10 },
       style: {
         fontSize: '16px',
@@ -118,7 +118,7 @@ const DraggableMediaItem: React.FC<DraggableMediaItemProps> = ({
             ...overlay.style
           }}
         >
-          {overlay.text}
+          {overlay.content}
         </div>
       ))}
     </div>
@@ -250,8 +250,8 @@ const DraggableMediaItem: React.FC<DraggableMediaItemProps> = ({
                       </div>
                       
                       <Textarea
-                        value={overlay.text}
-                        onChange={(e) => updateTextOverlay(overlay.id, 'text', e.target.value)}
+                        value={overlay.content}
+                        onChange={(e) => updateTextOverlay(overlay.id, 'content', e.target.value)}
                         className="h-16 text-xs resize-none"
                         placeholder="Enter text..."
                       />

@@ -122,7 +122,6 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
                 eventType={formData.eventType}
                 receiverName={formData.receiverName}
                 senderName={formData.senderName}
-                selectedEvent={selectedEvent}
                 customEvent={customEvent}
                 onEventChange={onEventChange}
                 onInputChange={onInputChange}
@@ -133,7 +132,11 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
             <TabsContent value="content" className="space-y-4 mt-0">
               <ContentForm
                 texts={formData.texts}
-                onChange={onTextChange}
+                media={formData.media}
+                emojis={formData.emojis}
+                onTextChange={onTextChange}
+                onMediaChange={onMediaChange}
+                onEmojiChange={onEmojiChange}
               />
             </TabsContent>
 
@@ -165,8 +168,12 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
                 />
                 
                 <CustomizationForm
+                  backgroundSettings={formData.backgroundSettings}
+                  borderSettings={formData.borderSettings}
                   layout={formData.layout}
                   animationStyle={formData.animationStyle}
+                  onBackgroundChange={onBackgroundChange}
+                  onBorderChange={onBorderChange}
                   onLayoutChange={onLayoutChange}
                   onAnimationChange={onAnimationChange}
                 />
@@ -175,7 +182,7 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
 
             <TabsContent value="share" className="space-y-4 mt-0">
               <ActionsForm
-                formData={formData}
+                greetingData={formData}
                 selectedEvent={selectedEvent}
                 onGenerateLink={onGenerateLink}
               />
