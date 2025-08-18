@@ -5,8 +5,10 @@ import { useCreate } from "./create/useCreate";
 import BackButton from "@/components/ui/back-button";
 import LanguageSelector from "@/components/language/LanguageSelector";
 import FormColumn from "./create/FormColumn";
+import CompactFormColumn from "@/components/greeting/form/CompactFormColumn";
 import LivePreviewCard from "./create/LivePreviewCard";
 import PreviewModal from "./create/PreviewModal";
+import EnhancedPreview from "@/components/preview/EnhancedPreview";
 
 const CreatePage: React.FC = () => {
   const {
@@ -47,7 +49,7 @@ const CreatePage: React.FC = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <FormColumn
+          <CompactFormColumn
             formData={formData}
             selectedEvent={selectedEvent}
             customEvent={customEvent}
@@ -67,8 +69,13 @@ const CreatePage: React.FC = () => {
           <div className={cn("space-y-6")}>
             <LivePreviewCard formData={formData} selectedEvent={selectedEvent} onOpenPreview={handlePreviewClick} />
 
-            {/* preview modal */}
-            <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} greetingData={formData} selectedEvent={selectedEvent} />
+            {/* Enhanced preview modal with editing capabilities */}
+            <PreviewModal 
+              isOpen={isPreviewOpen} 
+              onClose={() => setIsPreviewOpen(false)} 
+              greetingData={formData} 
+              selectedEvent={selectedEvent}
+            />
           </div>
         </div>
       </div>

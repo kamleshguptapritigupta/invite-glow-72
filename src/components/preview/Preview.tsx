@@ -11,7 +11,7 @@ import BorderContainer from './BorderContainer';
 import EmojisLayer from './EmojisLayer';
 import EventHeader from './EventHeader';
 import GreetingTexts from './GreetingTexts';
-import MediaGallery from './MediaGallery';
+import EnhancedMediaGallery from './EnhancedMediaGallery';
 import SenderSection from './SenderSection';
 
 interface PreviewProps {
@@ -46,7 +46,7 @@ const Preview = ({ greetingData, selectedEvent, className, showVisualEditor, isC
           <div className="space-y-8">
             <EventHeader greetingData={greetingData} selectedEvent={selectedEvent} />
             <GreetingTexts greetingData={greetingData} />
-            <MediaGallery greetingData={greetingData} />
+            <EnhancedMediaGallery greetingData={greetingData} />
             <SenderSection greetingData={greetingData} />
             <div className="flex flex-col items-center gap-4 m-4">
               <ShareActions greetingData={greetingData} greetingRef={greetingRef} selectedEvent={selectedEvent} />
