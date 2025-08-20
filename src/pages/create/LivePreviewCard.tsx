@@ -12,9 +12,10 @@ type Props = {
   selectedEvent: any;
   onOpenPreview: () => void;
   onGenerateLink: () => void;
+  onDataChange?: (data: any) => void;
 };
 
-export default function LivePreviewCard({ formData, selectedEvent, onOpenPreview, onGenerateLink }: Props) {
+export default function LivePreviewCard({ formData, selectedEvent, onOpenPreview, onGenerateLink, onDataChange }: Props) {
   const { translate } = useLanguageTranslation();
 
   return (
@@ -46,7 +47,11 @@ export default function LivePreviewCard({ formData, selectedEvent, onOpenPreview
       <CardContent>
         {formData.eventType ? ( 
           <div>
-          <Preview greetingData={formData} selectedEvent={selectedEvent} />
+          <Preview 
+            greetingData={formData} 
+            selectedEvent={selectedEvent} 
+            onDataChange={onDataChange}
+          />
 
           <ActionsForm greetingData={formData} onGenerateLink={onGenerateLink} selectedEvent={selectedEvent}/>
 

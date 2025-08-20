@@ -9,7 +9,6 @@ import LivePreviewCard from "./create/LivePreviewCard";
 import PreviewModal from "./create/PreviewModal";
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 
-
 const CreatePage: React.FC = () => {
   const {
     formData,
@@ -69,7 +68,13 @@ const CreatePage: React.FC = () => {
           />
 
           <div className={cn("space-y-6")}>
-            <LivePreviewCard formData={formData} selectedEvent={selectedEvent} onOpenPreview={handlePreviewClick} onGenerateLink={generateShareableURL}/>
+            <LivePreviewCard 
+              formData={formData} 
+              selectedEvent={selectedEvent} 
+              onOpenPreview={handlePreviewClick} 
+              onGenerateLink={generateShareableURL}
+              onDataChange={setFormData}
+            />
 
             {/* Enhanced preview modal with editing capabilities */}
             <PreviewModal 
@@ -77,6 +82,7 @@ const CreatePage: React.FC = () => {
               onClose={() => setIsPreviewOpen(false)} 
               greetingData={formData} 
               selectedEvent={selectedEvent}
+              onDataChange={setFormData}
             />
           </div>
         </div>

@@ -13,37 +13,39 @@ import EventHeader from './EventHeader';
 import GreetingTexts from './GreetingTexts';
 import EnhancedMediaGallery from './EnhancedMediaGallery';
 import SenderSection from './SenderSection';
-import DraggableMediaItem from './DraggableMediaItem';
+import EnhancedInteractivePreview from './EnhancedInteractivePreview';
 
 
 interface PreviewProps {
   greetingData: GreetingFormData;
   selectedEvent: EventType | null;
   className?: string;
-  showVisualEditor?: boolean;
-  isCompact?: boolean;
+  onDataChange?: (data: GreetingFormData) => void;
 }
 
-const Preview = ({ greetingData, selectedEvent, className, showVisualEditor, isCompact = false }: PreviewProps) => {
+const Preview = ({ greetingData, selectedEvent, className, onDataChange }: PreviewProps) => {
   const navigate = useNavigate();
   const greetingRef = useRef<HTMLDivElement>(null);
   const { translate } = useLanguageTranslation();
 
+  // Use enhanced interactive preview when onDataChange is provided
+  if (onDataChange) {
+    return (
+      <div className="relative">       
+        <EnhancedInteractivePreview
+          greetingData={greetingData}
+          selectedEvent={selectedEvent}
+          onDataChange={onDataChange}
+          className={className}
+        />
+      </div>
+    );
+  }
+
   return (
     <BackgroundWrapper greetingData={greetingData} className={className}>
       <div className="max-w-4xl mx-auto relative" ref={greetingRef}>
-        {showVisualEditor && (
-          <Button
-            onClick={() => navigate(-1)}
-            variant="ghost"
-            className="absolute -top-12 left-0 z-50"
-            aria-label={translate('Back to editor')}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {translate('Back to Editor')}
-          </Button>
-        )}
-
+        
         <BorderContainer greetingData={greetingData} selectedEvent={selectedEvent}>
           <div className="space-y-8">
             <EventHeader greetingData={greetingData} selectedEvent={selectedEvent} />

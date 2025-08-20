@@ -35,7 +35,7 @@ const EventHeader: React.FC<Props> = ({ greetingData, selectedEvent }) => {
         {currentEvent.emoji}
       </motion.div>
       <h1 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-        {currentEvent.label}
+       Happy {currentEvent.label}
       </h1>
       {greetingData.receiverName && (
         <p className="text-xl md:text-2xl font-bold text-primary">{greetingData.receiverName}</p>
