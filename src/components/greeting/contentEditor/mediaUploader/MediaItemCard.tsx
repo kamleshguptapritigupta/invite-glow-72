@@ -53,7 +53,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
       onDragEnd={handleDragEnd}
     >
       {/* Toolbar */}
-      <div className="absolute bg-white/90 right-3 flex gap-1 z-10 rounded-xl shadow-xl">
+      <div className="absolute bg-white/90 right-3 flex gap-0 sm:gap-1 z-10 rounded-xl shadow-xl">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -63,7 +63,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                 onClick={() => moveMediaPriority(index, "up")}
                 disabled={item.priority === 1}
               >
-                <ArrowUp className="w-4 h-4" />
+                <ArrowUp className="w-3 h-3 sm:w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Move Up</TooltipContent>
@@ -79,7 +79,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                 onClick={() => moveMediaPriority(index, "down")}
                 disabled={false} // no hard block, sorted in parent
               >
-                <ArrowDown className="w-4 h-4" />
+                <ArrowDown className="w-3 h-3 sm:w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Move Down</TooltipContent>
@@ -94,7 +94,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                 variant="ghost"
                 onClick={() => setShowSettings(!showSettings)}
               >
-                <Settings className="w-4 h-4" />
+                <Settings className="w-3 h-3 sm:w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Settings</TooltipContent>
@@ -110,7 +110,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                 className="text-red-500"
                 onClick={() => removeMedia(index)}
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3 h-3 sm:w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Delete</TooltipContent>

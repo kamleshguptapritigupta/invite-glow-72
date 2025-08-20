@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Move, RotateCw, ZoomIn, ZoomOut, Eye, EyeOff } from 'lucide-react';
 import { GreetingFormData, EventType, MediaItem, TextContent } from '@/types/greeting';
-import { eventTypes } from '@/data/eventTypes';
+import { eventTypes } from '@/types/eventTypes';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import { cn } from '@/lib/utils';
 import DraggableElement from './DraggableElement';

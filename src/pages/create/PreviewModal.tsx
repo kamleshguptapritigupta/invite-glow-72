@@ -14,7 +14,7 @@ export default function PreviewModal({ isOpen, onClose, greetingData, selectedEv
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="relative max-w-6xl w-full max-h-[90vh] overflow-auto">
         <Button
           onClick={onClose}

@@ -1,18 +1,21 @@
 import { Separator } from '@/components/ui/separator';
 import { BorderSettings } from '@/types/background';
-import BackgroundCustomizer from './BackgroundCustomizer/BackgroundCustomizer';
-import BorderCustomizer from './BorderCustomizer/BorderCustomizer';
-import LayoutSelector from './LayoutSelector';
+import BackgroundCustomizer from '../customization/BackgroundCustomizer/BackgroundCustomizer';
+import BorderCustomizer from '../customization/BorderCustomizer/BorderCustomizer';
+import LayoutSelector from '../customization/LayoutSelector';
+import EmojiSelector from '../contentEditor/EmojiSelector';
 
 interface CustomizationFormProps {
   backgroundSettings: any;
   borderSettings: BorderSettings;
   layout: string;
   animationStyle: string;
+  emojis: { id: string; emoji: string; position: { x: number; y: number }; size: number; animation: string; }[];
   onBackgroundChange: (settings: any) => void;
   onBorderChange: (settings: BorderSettings) => void;
   onLayoutChange: (layout: string) => void;
   onAnimationChange: (animation: string) => void;
+  onEmojiChange: (emojis: any[]) => void;
 }
 
 const CustomizationForm = ({
@@ -20,13 +23,25 @@ const CustomizationForm = ({
   borderSettings,
   layout,
   animationStyle,
+  emojis,
   onBackgroundChange,
   onBorderChange,
   onLayoutChange,
-  onAnimationChange
+  onAnimationChange,
+  onEmojiChange
+
 }: CustomizationFormProps) => {
   return (
     <>
+
+     {/* Emoji Decorator */}
+      <EmojiSelector
+        emojis={emojis}
+        onChange={onEmojiChange}
+      />
+
+      <Separator />
+
       {/* Background Customizer */}
       <BackgroundCustomizer
         settings={backgroundSettings}

@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { layoutStyles, animationStyles } from '@/data/eventTypes';
+import { layoutStyles, animationStyles } from '@/types/eventTypes';
 
 interface LayoutSelectorProps {
   layout: string;

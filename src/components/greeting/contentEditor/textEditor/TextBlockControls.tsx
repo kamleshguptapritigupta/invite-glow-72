@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TextContent } from '@/types/greeting';
-import { animationStyles } from '@/data/eventTypes';
+import { animationStyles } from '@/types/eventTypes';
 
 const fontSizes = [
   { value: '12px', label: 'Small (12px)' },

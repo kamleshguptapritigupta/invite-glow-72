@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useToast } from '@/hooks/use-toast';
 import { Share2, FileImage, FileText, Copy, QrCode,CheckCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import jsPDF from 'jspdf'; 
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import type { EventType } from '@/types/greeting';
 
@@ -321,53 +321,92 @@ const saveAsPDF = async () => {
            
           </p>
         </div>
-      <div className="w-full flex flex-nowrap items-center justify-center gap-1 overflow-x-auto  ">
+    
+      <div className="w-full flex flex-nowrap items-center justify-center gap-1 bg-gradient-to-r from-muted/20 to-muted/10 overflow-x-auto ">
 
-        <Button 
-          onClick={saveAsImage} 
-          disabled={isGenerating}
-          className="shrink-0 flex items-center gap-1 px-3 md:px-4 bg-blue-600 hover:bg-blue-700"
-        >
-          <FileImage className="h-4 w-4" />
-          <span className="hidden sm:inline whitespace-nowrap">Save Image</span>
-        </Button>
+  {/* Save Image Button */}
+  <Button 
+    onClick={saveAsImage} 
+    disabled={isGenerating}
+    size="sm"
+    className="shrink-0 flex items-center gap-1.5 px-3 py-2 h-9 min-w-[3rem] 
+              bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 
+              text-white shadow-md hover:shadow-lg transition-all duration-200
+              disabled:opacity-50 disabled:cursor-not-allowed
+              group relative overflow-hidden"
+  >
+    {/* Shine effect */}
+    <span className="absolute inset-0 bg-white/20 -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+    
+    <FileImage className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+    <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm font-medium">Save Image</span>
+    <span className="sm:hidden sr-only">Image</span>
+  </Button>
 
-        <Button 
-          onClick={saveAsPDF} 
-          disabled={isGenerating}
-          className="shrink-0 flex items-center gap-1 px-3 md:px-4 bg-red-600 hover:bg-red-700"
-        >
-          <FileText className="h-4 w-4" />
-          <span className="hidden sm:inline whitespace-nowrap">Save PDF</span>
-        </Button>
+  {/* Save PDF Button */}
+  <Button 
+    onClick={saveAsPDF} 
+    disabled={isGenerating}
+    size="sm"
+    className="shrink-0 flex items-center gap-1.5 px-3 py-2 h-9 min-w-[3rem]
+              bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700
+              text-white shadow-md hover:shadow-lg transition-all duration-200
+              disabled:opacity-50 disabled:cursor-not-allowed
+              group relative overflow-hidden"
+  >
+    {/* Shine effect */}
+    <span className="absolute inset-0 bg-white/20 -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+    
+    <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+    <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm font-medium">Save PDF</span>
+    <span className="sm:hidden sr-only">PDF</span>
+  </Button>
 
+  {/* Copy Link Button */}
+  <Button 
+    onClick={copyShareLink}
+    size="sm"
+    className="shrink-0 flex items-center gap-1.5 px-3 py-2 h-9 min-w-[3rem]
+              bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+              text-white shadow-md hover:shadow-lg transition-all duration-200
+              group relative overflow-hidden"
+  >
+    {/* Shine effect */}
+    <span className="absolute inset-0 bg-white/20 -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+    
+    {isCopied ? (
+      <>
+        <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 text-green-200" />
+        <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm font-medium">Copied!</span>
+        <span className="sm:hidden sr-only">Copied</span>
+      </>
+    ) : (
+      <>
+        <Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+        <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm font-medium">Copy Link</span>
+        <span className="sm:hidden sr-only">Copy</span>
+      </>
+    )}
+  </Button>
 
- <Button onClick={copyShareLink} className="flex items-center gap-1 px-3 md:px-4 bg-green-600 hover:bg-green-700">
-                {isCopied ? (
-              <>
-                <CheckCircle className="h-4 w-4 text-green-500" />
-               <span className="hidden sm:inline whitespace-nowrap"> Copied! </span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4" />
-                <span className="hidden sm:inline whitespace-nowrap">Copy Link</span>
-              </>
-            )}
-              </Button>
+  {/* Share Button */}
+  <Button 
+    onClick={() => setShareDialogOpen(true)}
+    size="sm"
+    className="shrink-0 flex items-center gap-1.5 px-3 py-2 h-9 min-w-[3rem]
+              bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700
+              text-white shadow-md hover:shadow-lg transition-all duration-200
+              group relative overflow-hidden"
+  >
+    {/* Shine effect */}
+    <span className="absolute inset-0 bg-white/20 -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+    
+    <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+    <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm font-medium">Share</span>
+    <span className="sm:hidden sr-only">Share</span>
+  </Button>
 
-
-                <Button 
-          onClick={() => setShareDialogOpen(true)} 
-          // onClick={shareGreeting}
-          className="shrink-0 flex items-center gap-1 px-3 md:px-4"
-        >
-          <Share2 className="h-4 w-4" />
-           <span className="hidden sm:inline whitespace-nowrap">Share</span>
-          <span className="whitespace-nowrap">Link</span>
-        </Button>
-
-      </div>
+</div>
  </CardContent>
     </Card>
 
@@ -375,7 +414,7 @@ const saveAsPDF = async () => {
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Share Your Greeting</DialogTitle>
+            <DialogTitle> {translate('Share Your Greeting')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">

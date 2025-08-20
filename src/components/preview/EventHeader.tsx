@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { GreetingFormData, EventType } from '@/types/greeting';
-import { eventTypes } from '@/data/eventTypes';
+import { eventTypes } from '@/types/eventTypes';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import { motion } from 'framer-motion';
 

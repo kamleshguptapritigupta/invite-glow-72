@@ -179,10 +179,13 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
     onClick={addElement}
     disabled={internal.decorativeElements.length >= 8}
     size="sm"
-    variant={internal.decorativeElements.length >= 8 ? "outline" : "default"}
+    variant={
+    internal.decorativeElements.length >= 8 ? "outline" : 
+    internal.decorativeElements.length === 0 ? "default" : "outline"
+  }
     className={cn(
-      "transition-all duration-300 h-8",
-      internal.decorativeElements.length === 0 ? "w-8 p-0" : "px-3"
+        "transition-all duration-300 font-medium",
+        internal.decorativeElements.length === 0 ? "h-8 w-8 p-0" : internal.decorativeElements.length >= 8 ? "h-8 px-3 bg-destructive/10 text-destructive border-destructive" : "bg-primary/10 text-primary border-primary"    
     )}
   >
     {internal.decorativeElements.length === 0 ? (

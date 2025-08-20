@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { GreetingFormData, MediaItem, TextContent, EventType } from "@/types/greeting";
-import { eventTypes } from "@/data/eventTypes";
+import { eventTypes } from "@/types/eventTypes";
 
 export function useCreate() {
   const navigate = useNavigate();

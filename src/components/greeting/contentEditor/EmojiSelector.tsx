@@ -78,18 +78,21 @@ const EmojiSelector = ({ emojis, onChange }: EmojiSelectorProps) => {
     onClick={() => setShowPicker(!showPicker)}
     disabled={emojis.length >= 10}
     size="sm"
-    variant={emojis.length >= 10 ? "outline" : "outline"}
+     variant={
+    emojis.length >= 10 ? "outline" : 
+    emojis.length === 0 ? "default" : "outline"
+  }
     className={cn(
-      "transition-all duration-300 h-8",
-      emojis.length === 0 ? "w-8 p-0" : "px-3"
-    )}
+        "transition-all duration-300 font-medium animate",
+        emojis.length === 0 ? "h-8 w-8 p-0" : emojis.length >= 10 ? "h-8 px-3 bg-destructive/10 text-destructive border-destructive" : "bg-primary/10 text-primary border-primary"
+      )}
   >
     {emojis.length === 0 ? (
       <Plus className="h-4 w-4" />
     ) : emojis.length >= 10 ? (
-      <span className="text-destructive text-xs">Max Reached</span>
+     "Max Reached"
     ) : (
-      <span className="flex items-center gap-1 text-xs">
+      <span className="flex items-center gap-1">
         <Plus className="h-3 w-3" />
         Add More
       </span>

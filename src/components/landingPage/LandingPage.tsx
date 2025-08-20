@@ -97,7 +97,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* Gradient heading */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift animate-bounce">
           {translate('Beautiful Greetings')}
         </h1>
 

@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { EventType } from '@/types/greeting';
-import { eventTypes } from '@/data/eventTypes';
+import { eventTypes } from '@/types/eventTypes';
 import { Plus, Edit } from 'lucide-react';
 
 interface CustomEventSelectorProps {
@@ -102,6 +102,7 @@ const CustomEventSelector = ({
             onClick={() => setShowCustomForm(!showCustomForm)}
             size="sm"
             variant="outline"
+            className="transition-all duration-5000 font-medium bg-primary/10 text-primary border-primary animate-pulse"
           >
             <Plus className="h-3 w-3 mr-1" />
             Custom Event

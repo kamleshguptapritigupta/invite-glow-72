@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { GreetingFormData } from '@/types/greeting';
-import ShareActions from '../../share/ShareActions';
+import ShareActions from './ShareActions';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import { EventType } from '@/types/greeting';
 
@@ -53,10 +53,10 @@ const ActionsForm = ({ greetingData, onGenerateLink, selectedEvent }: ActionsFor
 
   return (
     <>
-      <Separator />
-      
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <ShareActions greetingData={greetingData} selectedEvent={selectedEvent} />
+      {/* <Separator />
+       */}
+      <div className="flex flex-col items-center mt-4 gap-4">
+        {/* <ShareActions greetingData={greetingData} selectedEvent={selectedEvent} /> */}
 
             
         <Button

@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import { useCreate } from "./create/useCreate";
 import BackButton from "@/components/ui/back-button";
 import LanguageSelector from "@/components/language/LanguageSelector";
-import FormColumn from "./create/FormColumn";
 import CompactFormColumn from "@/components/greeting/form/CompactFormColumn";
 import LivePreviewCard from "./create/LivePreviewCard";
 import PreviewModal from "./create/PreviewModal";
-import EnhancedPreview from "@/components/preview/EnhancedPreview";
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
+
 
 const CreatePage: React.FC = () => {
   const {
@@ -28,9 +28,11 @@ const CreatePage: React.FC = () => {
     setCustomEvent,
   } = useCreate();
 
+  const { translate } = useLanguageTranslation();
+
   return (
     <div className="bg-gradient-to-br from-primary/10 via-background to-secondary/20 py-2">
-      <div className="flex justify-between items-center w-full mt-4">
+      <div className="flex justify-between items-center w-full mt-4 px-4">
         <BackButton to="/" className="bg-background/80 backdrop-blur">
           Back to Home
         </BackButton>
@@ -40,14 +42,14 @@ const CreatePage: React.FC = () => {
 
       <div className="max-w-6xl mx-auto pt-16">
         <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-2xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-violet-500 hover:bg-gradient-to-l bg-clip-text text-transparent">
-            ✨ Create Your Greeting
+          <h1 className="text-2xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-violet-500 hover:bg-gradient-to-l bg-clip-text text-transparent animate-bounce">
+            ✨ {translate('Create Your Greeting')}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium animate-typing overflow-hidden border-r-4 border-r-primary">
             Design a beautiful, personalized greeting to share with someone special
           </p>
         </div>
-
+ 
         <div className="grid lg:grid-cols-2 gap-8">
           <CompactFormColumn
             formData={formData}
@@ -67,7 +69,7 @@ const CreatePage: React.FC = () => {
           />
 
           <div className={cn("space-y-6")}>
-            <LivePreviewCard formData={formData} selectedEvent={selectedEvent} onOpenPreview={handlePreviewClick} />
+            <LivePreviewCard formData={formData} selectedEvent={selectedEvent} onOpenPreview={handlePreviewClick} onGenerateLink={generateShareableURL}/>
 
             {/* Enhanced preview modal with editing capabilities */}
             <PreviewModal 

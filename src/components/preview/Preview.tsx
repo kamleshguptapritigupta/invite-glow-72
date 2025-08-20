@@ -13,6 +13,8 @@ import EventHeader from './EventHeader';
 import GreetingTexts from './GreetingTexts';
 import EnhancedMediaGallery from './EnhancedMediaGallery';
 import SenderSection from './SenderSection';
+import DraggableMediaItem from './DraggableMediaItem';
+
 
 interface PreviewProps {
   greetingData: GreetingFormData;
@@ -47,10 +49,8 @@ const Preview = ({ greetingData, selectedEvent, className, showVisualEditor, isC
             <EventHeader greetingData={greetingData} selectedEvent={selectedEvent} />
             <GreetingTexts greetingData={greetingData} />
             <EnhancedMediaGallery greetingData={greetingData} />
-            <SenderSection greetingData={greetingData} />
-            <div className="flex flex-col items-center gap-4 m-4">
-              <ShareActions greetingData={greetingData} greetingRef={greetingRef} selectedEvent={selectedEvent} />
-            </div>
+            <SenderSection greetingData={greetingData} /> 
+            <ShareActions greetingData={greetingData} greetingRef={greetingRef} selectedEvent={selectedEvent} />
           </div>
         </BorderContainer>
 

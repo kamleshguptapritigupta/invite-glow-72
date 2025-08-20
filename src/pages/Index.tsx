@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { GreetingFormData, EventType } from '@/types/greeting';
-import { eventTypes, animationStyles } from '@/data/eventTypes';
+import { eventTypes, animationStyles } from '@/types/eventTypes';
 import ShareActions from '@/components/share/ShareActions';
 import SEOManager from '@/components/seo/SEOManager';
 import { motion, AnimatePresence } from 'framer-motion';

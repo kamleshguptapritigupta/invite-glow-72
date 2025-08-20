@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Image, Video } from "lucide-react";
 import { MediaItem } from "@/types/greeting";
+import { cn } from '@/lib/utils';
 
 interface MediaHeaderProps {
   media: MediaItem[];
@@ -41,12 +42,18 @@ const MediaHeader = ({ media, maxItems, addMedia, usagePercentage }: MediaHeader
                   onClick={() => addMedia("image")}
                   disabled={media.length >= maxItems}
                   size="sm"
-                  variant="outline"
-                  className="gap-1 min-w-[100px]"
+                  variant={
+                    media.length >= maxItems ? "outline" : 
+                    media.length === 0 ? "default" : "outline"
+                  }
+                  className={cn(
+                          "gap-1 min-w-[100px] transition-all duration-300 font-medium animate",
+                          media.length === 0 ? "h-8 w-8 p-0" : media.length >= maxItems ? "h-8 px-3 bg-destructive/10 text-destructive border-destructive" : "bg-primary/10 text-primary border-primary"
+                        )}
                 >
                   <Image className="h-3.5 w-3.5" />
                   <span className="truncate">
-                    {media.length > 0 ? "Add More" : "Add Image"}
+                    {media.length > 0 ? "Add More Image" : "Add Image"}
                   </span>
                 </Button>
               </TooltipTrigger>
@@ -67,12 +74,18 @@ const MediaHeader = ({ media, maxItems, addMedia, usagePercentage }: MediaHeader
                   onClick={() => addMedia("video")}
                   disabled={media.length >= maxItems}
                   size="sm"
-                  variant="outline"
-                  className="gap-1 min-w-[100px]"
+                  variant={
+                    media.length >= maxItems ? "outline" : 
+                    media.length === 0 ? "default" : "outline"
+                  }
+                  className={cn(
+                          "gap-1 min-w-[100px] transition-all duration-300 font-medium animate",
+                          media.length === 0 ? "h-8 w-8 p-0" : media.length >= maxItems ? "h-8 px-3 bg-destructive/10 text-destructive border-destructive" : "bg-primary/10 text-primary border-primary"
+                        )}
                 >
                   <Video className="h-3.5 w-3.5" />
                   <span className="truncate">
-                    {media.length > 0 ? "Add More" : "Add Video"}
+                    {media.length > 0 ? "Add More Video" : "Add Video"}
                   </span>
                 </Button>
               </TooltipTrigger>

@@ -25,8 +25,9 @@ const GreetingTexts: React.FC<Props> = ({ greetingData }) => {
             style={{
               fontSize: text.style.fontSize,
               fontWeight: text.style.fontWeight,
-              color: text.style.color,
+              color: text.style.color, 
               textAlign: text.style.textAlign,
+              animation: text.animation ? `${text.animation} 1.5s ease-in-out infinite` : undefined
             }}
           >
             {text.content}

@@ -1,47 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button'; // Adjust import path as needed
+import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 
 interface FloatingButtonProps {
   className?: string;
 }
 
 export const FloatingButton = ({ className }: FloatingButtonProps) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+  const { translate } = useLanguageTranslation();
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 flex justify-center p-4 sm:p-6 bg-gradient-to-t from-black/20 to-transparent backdrop-blur-sm z-50 ${className}`}>
+    <div className={` bottom-0 left-0 right-0 flex justify-center p-4 sm:p-6 bg-gradient-to-t from-black/20 to-transparent backdrop-blur-sm z-50 ${className}`}>
       <div className="relative">
-        {/* Lightning spark rotating around button */}
-        <div 
-          className="absolute -inset-2 rounded-lg animate-spin-slow [animation-duration:8s]"
-          style={{
-            ['--spark-color-1' as any]: '#f472b6', // pink-400
-            ['--spark-color-2' as any]: '#a78bfa', // violet-400
-            ['--spark-color-3' as any]: '#60a5fa', // blue-400
-            ['--spark-color-4' as any]: '#34d399', // emerald-400
-          }}
-        >
-          {[...Array(4)].map((_, i) => (
-            <div 
-              key={i}
-              className="absolute top-0 left-1/2 w-full h-full"
-              style={{
-                transform: `rotate(${i * 90}deg)`,
-                ['--delay' as any]: `${i * 0.5}s`,
-              }}
-            >
-              <div 
-                className={`absolute top-0 left-0 w-3 h-3 rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-[pulse_1.5s_ease-in-out_infinite]`}
-                style={{
-                  backgroundColor: `var(--spark-color-${i + 1})`,
-                  ['--delay' as any]: `${i * 0.5}s`,
-                  animationDelay: `var(--delay)`
-                }}
-              />
-            </div>
-          ))}
-        </div>
-
+    
         <Button
           size="lg"
           onClick={() => navigate('/create')}
@@ -59,7 +31,7 @@ export const FloatingButton = ({ className }: FloatingButtonProps) => {
             <span className="mr-2 sm:mr-3 text-lg sm:text-xl md:text-2xl group-hover:animate-spin">
               ✨
             </span>
-            <span className="text-center">Customize and share with others</span>
+            <span className="text-center">{translate('Customize and share with others')}</span>
           </span>
 
           {/* Shine effect */}

@@ -3,9 +3,9 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import BasicDetailsForm from "@/components/greeting/contentEditor/BasicDetailsForm";
-import ContentForm from "@/components/greeting/contentEditor/ContentForm";
-import CustomizationForm from "@/components/greeting/customization/CustomizationForm";
-import ActionsForm from "@/components/greeting/form/ActionsForm";
+import ContentForm from "@/components/greeting/form/ContentForm";
+import CustomizationForm from "@/components/greeting/form/CustomizationForm";
+import ActionsForm from "@/components/share/ActionsForm";
 import { GreetingFormData, TextContent, MediaItem, EventType } from "@/types/greeting";
 
 type Props = {
@@ -67,24 +67,24 @@ export default function FormColumn(props: Props) {
         <ContentForm
           texts={formData.texts}
           media={formData.media}
-          emojis={formData.emojis}
           onTextChange={onTextChange}
           onMediaChange={onMediaChange}
-          onEmojiChange={onEmojiChange}
         />
 
         <Separator />
 
         <CustomizationForm
-          backgroundSettings={formData.backgroundSettings}
-          borderSettings={formData.borderSettings}
-          layout={formData.layout}
-          animationStyle={formData.animationStyle}
-          onBackgroundChange={onBackgroundChange}
-          onBorderChange={onBorderChange}
-          onLayoutChange={onLayoutChange}
-          onAnimationChange={onAnimationChange}
-        />
+                  emojis={formData.emojis}
+                  onEmojiChange={onEmojiChange}
+                  backgroundSettings={formData.backgroundSettings}
+                  borderSettings={formData.borderSettings}
+                  layout={formData.layout} 
+                  animationStyle={formData.animationStyle}
+                  onBackgroundChange={onBackgroundChange}
+                  onBorderChange={onBorderChange}
+                  onLayoutChange={onLayoutChange}
+                  onAnimationChange={onAnimationChange}
+                />
 
         <ActionsForm
           greetingData={formData}

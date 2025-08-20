@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
-import { GreetingFormData } from '@/types/greeting';
-import BackgroundRenderer from '@/components/greeting/customization/BackgroundCustomizer/BackgroundRenderer';
-import { useReducedMotion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import React, { useMemo } from "react";
+import { GreetingFormData } from "@/types/greeting";
+import BackgroundRenderer from "@/components/greeting/customization/BackgroundCustomizer/BackgroundRenderer";
+import { useReducedMotion, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { animationTypes } from "@/types/animationTypes";
 
 interface Props {
   greetingData: GreetingFormData;
@@ -12,6 +13,7 @@ interface Props {
 
 const BackgroundWrapper: React.FC<Props> = ({ greetingData, className, children }) => {
   const prefersReducedMotion = useReducedMotion();
+
   const bgSettings = useMemo(() => {
     const s = greetingData?.backgroundSettings;
     if (!s) return s;
@@ -21,9 +23,20 @@ const BackgroundWrapper: React.FC<Props> = ({ greetingData, className, children 
     return s;
   }, [greetingData?.backgroundSettings, prefersReducedMotion]);
 
+  const animation = greetingData?.animationStyle || "fade";
+
   return (
-    <BackgroundRenderer settings={bgSettings} className={cn("min-h-screen p-4 w-full relative overflow-hidden", className)}>
-      {children}
+    <BackgroundRenderer
+      settings={bgSettings}
+      className={cn("p-4 w-full relative overflow-hidden", className)}
+    >
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={animationTypes[animation]}
+      >
+        {children}
+      </motion.div>
     </BackgroundRenderer>
   );
 };

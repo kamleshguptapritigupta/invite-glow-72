@@ -71,11 +71,34 @@ export default function AdvancedTextEditor({ texts, onChange }: Props) {
               </span>
             </span>
           </CardTitle>
-          <Button onClick={addText} disabled={texts.length >= MAX_TEXT_LIMIT} size="sm" variant="outline"
-            className={cn("transition-all duration-300", texts.length === 0 ? "gap-2" : "gap-1", isAddingText && "animate-pulse")}>
-            <Plus className={cn("h-3 w-3 transition-transform", isAddingText && "rotate-90")} />
-            {texts.length === 0 ? "Add First Text" : texts.length >= MAX_TEXT_LIMIT ? "Limit Reached" : "Add More Text"}
-          </Button>
+         <Button 
+  onClick={addText} 
+  disabled={texts.length >= MAX_TEXT_LIMIT}
+  size="sm"
+  variant={
+    texts.length >= MAX_TEXT_LIMIT ? "outline" : 
+    texts.length === 0 ? "default" : "outline"
+  }
+  className={cn(
+    "transition-all duration-300 font-medium",
+    texts.length === 0 ? "h-8 w-8 p-0" : texts.length >= MAX_TEXT_LIMIT ? "h-8 px-3 bg-destructive/10 text-destructive border-destructive" : "bg-primary/10 text-primary border-primary",
+    isAddingText && "animate-pulse"
+  )}
+>
+  {texts.length === 0 ? (
+    <Plus className={cn(
+      "h-4 w-4 transition-transform", 
+      isAddingText && "rotate-90 scale-110"
+    )} />
+  ) : texts.length >= MAX_TEXT_LIMIT ? (
+    <span className="text-xs font-medium">Max Reached</span>
+  ) : (
+    <span className="flex items-center gap-1.5 text-xs">
+      <Plus className="h-3.5 w-3.5" />
+      Add More
+    </span>
+  )}
+</Button>
         </div>
       </CardHeader>
 
