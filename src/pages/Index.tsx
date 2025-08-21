@@ -50,6 +50,7 @@ useEffect(() => {
     videoPosition: safeJsonParse(params.get('videoPosition')) || { width: 400, height: 300 },
     animationStyle: params.get('animationStyle') || 'fade',
     layout: (params.get('layout') as any) || 'grid',
+    frameStyle: (params.get('frameStyle') as any) || 'classic',   
     theme: params.get('theme') || '',
     backgroundSettings: safeJsonParse(params.get('backgroundSettings')) || {
       color: '#ffffff',
@@ -143,7 +144,6 @@ if (greetingData && (greetingData.eventType || greetingData.customEventName)) {
       <Preview 
         greetingData={greetingData}
         selectedEvent={currentEvent}
-        showVisualEditor={false}
       />
       <FloatingButton />
     </>

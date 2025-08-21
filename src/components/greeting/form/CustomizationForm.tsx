@@ -11,11 +11,13 @@ interface CustomizationFormProps {
   layout: string;
   animationStyle: string;
   emojis: { id: string; emoji: string; position: { x: number; y: number }; size: number; animation: string; }[];
+  frameStyle: string;
   onBackgroundChange: (settings: any) => void;
   onBorderChange: (settings: BorderSettings) => void;
   onLayoutChange: (layout: string) => void;
   onAnimationChange: (animation: string) => void;
   onEmojiChange: (emojis: any[]) => void;
+  onFrameStyleChange: (frame: string) => void;
 }
 
 const CustomizationForm = ({
@@ -24,11 +26,13 @@ const CustomizationForm = ({
   layout,
   animationStyle,
   emojis,
+  frameStyle,
   onBackgroundChange,
   onBorderChange,
   onLayoutChange,
   onAnimationChange,
-  onEmojiChange
+  onEmojiChange,
+  onFrameStyleChange, 
 
 }: CustomizationFormProps) => {
   return (
@@ -62,8 +66,10 @@ const CustomizationForm = ({
       <LayoutSelector
         layout={layout}
         animationStyle={animationStyle}
+        frameStyle = {frameStyle}
         onLayoutChange={onLayoutChange}
         onAnimationChange={onAnimationChange}
+        onFrameStyleChange={onFrameStyleChange}
       />
     </>
   );

@@ -23,6 +23,7 @@ interface CompactFormColumnProps {
   onBorderChange: (settings: any) => void;
   onLayoutChange: (layout: string) => void;
   onAnimationChange: (animation: string) => void;
+  onFrameStyleChange:(frame:string) => void;
   onCustomEventCreate: (event: EventType) => void;
   onGenerateLink: () => void;
 }
@@ -40,6 +41,7 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
   onBorderChange,
   onLayoutChange,
   onAnimationChange,
+  onFrameStyleChange,
   onCustomEventCreate,
   onGenerateLink
 }) => {
@@ -201,12 +203,14 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
             onEmojiChange={onEmojiChange}
             backgroundSettings={formData.backgroundSettings}
             borderSettings={formData.borderSettings}
-            layout={formData.layout} 
+            layout={formData.layout}
+            frameStyle={formData.frameStyle} 
             animationStyle={formData.animationStyle}
             onBackgroundChange={onBackgroundChange}
             onBorderChange={onBorderChange}
             onLayoutChange={onLayoutChange}
             onAnimationChange={onAnimationChange}
+            onFrameStyleChange={onFrameStyleChange}
           />
         </div>
       </TabsContent>

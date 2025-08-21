@@ -21,6 +21,7 @@ type Props = {
   onBorderChange: (s: any) => void;
   onLayoutChange: (layout: string) => void;
   onAnimationChange: (anim: string) => void;
+  onFrameStyleChange:(frame:string) => void;
   onCustomEventCreate: (e: EventType) => void;
   onGenerateLink: () => void;
 };
@@ -39,6 +40,7 @@ export default function FormColumn(props: Props) {
     onBorderChange,
     onLayoutChange,
     onAnimationChange,
+    onFrameStyleChange,
     onCustomEventCreate,
     onGenerateLink,
   } = props;
@@ -79,11 +81,13 @@ export default function FormColumn(props: Props) {
                   backgroundSettings={formData.backgroundSettings}
                   borderSettings={formData.borderSettings}
                   layout={formData.layout} 
+                  frameStyle={formData.frameStyle}
                   animationStyle={formData.animationStyle}
                   onBackgroundChange={onBackgroundChange}
                   onBorderChange={onBorderChange}
                   onLayoutChange={onLayoutChange}
                   onAnimationChange={onAnimationChange}
+                  onFrameStyleChange={onFrameStyleChange}
                 />
 
         <ActionsForm

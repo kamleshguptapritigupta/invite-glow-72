@@ -63,6 +63,7 @@ const CreatePage: React.FC = () => {
             onBorderChange={(s) => setFormData((p: any) => ({ ...p, borderSettings: s }))}
             onLayoutChange={(layout) => handleInputChange("layout", layout)}
             onAnimationChange={(anim) => handleInputChange("animationStyle", anim)}
+            onFrameStyleChange={(frame) => handleInputChange("framenStyle", frame)}
             onCustomEventCreate={onCustomEventCreate}
             onGenerateLink={generateShareableURL}
           />

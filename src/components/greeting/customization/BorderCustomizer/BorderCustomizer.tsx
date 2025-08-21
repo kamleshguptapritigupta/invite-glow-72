@@ -72,7 +72,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
   };
 
   return (
-    <Card className="border rounded-lg">
+    <Card className="border border-pink-300 rounded-lg">
       <CardHeader className="p-4 pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">

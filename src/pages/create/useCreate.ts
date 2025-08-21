@@ -26,6 +26,7 @@ export function useCreate() {
     videoPosition: { width: 400, height: 300 },
     animationStyle: "fade",
     layout: "grid",
+    frameStyle: "classic",
     theme: "",
     backgroundSettings: {
       color: "#ffffff",
