@@ -76,7 +76,7 @@ export default function FormColumn(props: Props) {
         <Separator />
 
         <CustomizationForm
-                  emojis={formData.emojis}
+                  emojis={formData.emojis} 
                   onEmojiChange={onEmojiChange}
                   backgroundSettings={formData.backgroundSettings}
                   borderSettings={formData.borderSettings}
