@@ -200,13 +200,14 @@ const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false
           const frameClass = getFrameStyle(index);
           const animation = animationVariants[mediaItem.animation as keyof typeof animationVariants] || animationVariants.fadeIn;
           const isLoaded = loadedMedia.has(mediaItem.id);
+          const mediaFrameStyle = (mediaItem as any).frameStyle ? frameStyles[(mediaItem as any).frameStyle as keyof typeof frameStyles] : frameClass;
 
           return (
             <motion.div
               key={mediaItem.id}
               className={cn(
                 "group overflow-hidden transition-all duration-500 hover:scale-105",
-                frameClass,
+                mediaFrameStyle,
                 "max-w-[500px] max-h-[400px]", // Enforce max size
                 isCollage && "absolute cursor-pointer",
                 media.length === 1 && "max-w-2xl mx-auto", // Center single media

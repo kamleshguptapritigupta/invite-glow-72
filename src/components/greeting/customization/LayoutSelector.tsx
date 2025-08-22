@@ -144,65 +144,6 @@ const LayoutSelector = ({
           </AnimatePresence>
         </motion.div>
 
-         {/* Frame Styles */}
-        <motion.div 
-          initial={false}
-          animate={{ height: 'auto' }}
-          className="rounded-lg border border-gray-200 bg-white overflow-hidden"
-        >
-          <button
-            onClick={() => toggleSection('frames')}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Camera className="h-4 w-4 text-purple-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-800">Frame Styles</h3>
-                <small className="text-gray-500">Select borders and frames for your media</small>
-              </div>
-            </div>
-            {expandedSections.frames ? (
-              <ChevronUp className="h-4 w-4 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-4 w-4 text-gray-500" />
-            )}
-          </button>
-          
-          <AnimatePresence initial={false}>
-            {expandedSections.frames && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="px-4 pb-4"
-              >
-<div className="mt-4 grid grid-cols-2 gap-2">
-  {Object.entries(frameStyles).map(([key, frame]) => (
-    <div
-      key={key}
-      className={cn(
-        "p-2 rounded-md text-xs text-center cursor-pointer transition-all border flex flex-col items-center",
-        frameStyle === key
-          ? "bg-blue-100 text-blue-700 border-blue-300 shadow-sm"
-          : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
-      )}
-      onClick={() => onFrameStyleChange && onFrameStyleChange(key)}
-    >
-      <div className={cn("w-full h-12 mb-1 rounded flex items-center justify-center", frame.className)}>
-        <div className="w-8 h-8 bg-gray-300 rounded-sm opacity-50"></div>
-      </div>
-      <span>{frame.name}</span>
-    </div>
-  ))}
-</div>
-          
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
 
 
 
