@@ -27,6 +27,7 @@ export function useCreate() {
     animationStyle: "fade",
     layout: "grid",
     frameStyle: "classic",
+    mediaAnimation: "fade",
     theme: "",
     backgroundSettings: {
       color: "#ffffff",
@@ -81,7 +82,7 @@ export function useCreate() {
             style: {
               fontSize: "24px",
               fontWeight: "normal",
-              color: "hsl(var(--foreground))",
+              color: "#333333",
               textAlign: "center",
             },
             animation: "fade",
@@ -121,7 +122,7 @@ export function useCreate() {
                     style: {
                       fontSize: "24px",
                       fontWeight: "normal",
-                      color: "hsl(var(--foreground))",
+                      color: "#333333",
                       textAlign: "center",
                     },
                     animation: "fade",
@@ -249,7 +250,7 @@ export function useCreate() {
       style: {
         fontSize: "24px",
         fontWeight: "normal",
-        color: "hsl(var(--foreground))",
+        color: "#333333",
         textAlign: "center" as const,
       },
       animation: "fade",

@@ -19,11 +19,13 @@ import EnhancedInteractivePreview from './EnhancedInteractivePreview';
 interface PreviewProps {
   greetingData: GreetingFormData;
   selectedEvent: EventType | null;
+  frameStyle?: string;
+  mediaAnimation?: string;
   className?: string;
   onDataChange?: (data: GreetingFormData) => void;
 }
 
-const Preview = ({ greetingData, selectedEvent, className, onDataChange }: PreviewProps) => {
+const Preview = ({ greetingData, selectedEvent, frameStyle, mediaAnimation, className, onDataChange }: PreviewProps) => {
   const navigate = useNavigate();
   const greetingRef = useRef<HTMLDivElement>(null);
   const { translate } = useLanguageTranslation();
@@ -50,7 +52,11 @@ const Preview = ({ greetingData, selectedEvent, className, onDataChange }: Previ
           <div className="space-y-8">
             <EventHeader greetingData={greetingData} selectedEvent={selectedEvent} />
             <GreetingTexts greetingData={greetingData} />
-            <EnhancedMediaGallery greetingData={greetingData} />
+              <EnhancedMediaGallery 
+                greetingData={greetingData} 
+                frameStyle={frameStyle || greetingData.frameStyle}
+                mediaAnimation={mediaAnimation || greetingData.mediaAnimation}
+              />
             <SenderSection greetingData={greetingData} /> 
             <ShareActions greetingData={greetingData} greetingRef={greetingRef} selectedEvent={selectedEvent} />
           </div>

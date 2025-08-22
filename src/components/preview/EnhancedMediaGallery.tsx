@@ -10,10 +10,12 @@ interface Props {
   greetingData: GreetingFormData;
   isEditing?: boolean;
   onMediaChange?: (media: MediaItem[]) => void;
+  frameStyle?: string;
+  mediaAnimation?: string;
 }
 
 // Enhanced frame styles with better visual design
-const frameStyles = {
+export const frameStyles = {
 
   classic:
     "border-8 border-white shadow-2xl rounded-lg bg-white transition-all hover:scale-[1.02] hover:shadow-3xl",
@@ -80,7 +82,7 @@ const layoutStyles = {
   masonry: 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]', // Masonry columns
   carousel: 'flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-hide',
   stack: 'flex flex-col gap-8 max-w-4xl mx-auto',
-  collage: 'relative min-h-[600px] grid grid-cols-3 auto-rows-[200px] gap-2 [&>*:nth-child(2n)]:col-span-2 [&>*:nth-child(3n)]:row-span-2', 
+  collage: 'relative min-h-[400px] grid grid-cols-3 auto-rows-[200px] gap-2 [&>*:nth-child(2n)]:col-span-2 [&>*:nth-child(3n)]:row-span-2', 
   mosaic: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4',
   slideshow: 'relative w-full h-[500px] flex items-center justify-center overflow-hidden',
   polaroid: 'flex flex-wrap justify-center gap-8 [&>*]:bg-white [&>*]:shadow-xl [&>*]:p-2 [&>*]:rotate-1 hover:[&>*]:rotate-0 transition',
@@ -94,7 +96,7 @@ const layoutStyles = {
 
 };
 
-const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false, onMediaChange }) => {
+const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false, onMediaChange, frameStyle, mediaAnimation }) => {
   const { translate } = useLanguageTranslation();
   const [mediaErrors, setMediaErrors] = useState<Record<string, boolean>>({});
   const [retryCount, setRetryCount] = useState<Record<string, number>>({});
@@ -138,10 +140,19 @@ const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false
     return layoutStyles[layout as keyof typeof layoutStyles] || layoutStyles.grid;
   }, [greetingData.media.length, greetingData.layout]);
 
+
+   // ---- FRAME ----
   const getFrameStyle = (index: number) => {
+    // Use the selected frameStyle prop if available, otherwise cycle through styles
+    // Priority: greetingData.frameStyle > prop > cycle
+    if (greetingData.frameStyle && frameStyles[greetingData.frameStyle as keyof typeof frameStyles]) {
+      return frameStyles[greetingData.frameStyle as keyof typeof frameStyles];
+    }
+    if (frameStyle && frameStyles[frameStyle as keyof typeof frameStyles]) {
+      return frameStyles[frameStyle as keyof typeof frameStyles];
+    }
     const frames = Object.keys(frameStyles);
-    const frameKey = frames[index % frames.length] as keyof typeof frameStyles;
-    return frameStyles[frameKey];
+    return frameStyles[frames[index % frames.length] as keyof typeof frameStyles];
   };
 
   const getCollagePosition = (index: number, total: number) => {
@@ -196,6 +207,7 @@ const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false
               className={cn(
                 "group overflow-hidden transition-all duration-500 hover:scale-105",
                 frameClass,
+                "max-w-[500px] max-h-[400px]", // Enforce max size
                 isCollage && "absolute cursor-pointer",
                 media.length === 1 && "max-w-2xl mx-auto", // Center single media
                 !hasDesign && "shadow-lg hover:shadow-2xl" // Enhanced shadow when no design

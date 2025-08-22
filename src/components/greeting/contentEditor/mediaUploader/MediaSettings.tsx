@@ -18,6 +18,8 @@ const MediaSettings: React.FC<MediaSettingsProps> = ({ item, index, updateMedia 
           <Label>Width (px)</Label>
           <Input
             type="number"
+             min={50}  // optional lower bound
+             max={500} // enforce max width
             value={item.position.width}
             onChange={(e) =>
               updateMedia(index, "position", { width: Number(e.target.value) })
@@ -28,6 +30,8 @@ const MediaSettings: React.FC<MediaSettingsProps> = ({ item, index, updateMedia 
           <Label>Height (px)</Label>
           <Input
             type="number"
+             min={40}  // optional lower bound
+             max={400} // enforce max width
             value={item.position.height}
             onChange={(e) =>
               updateMedia(index, "position", { height: Number(e.target.value) })

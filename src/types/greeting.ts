@@ -71,6 +71,7 @@ export interface GreetingFormData {
   animationStyle: string;
   layout: 'grid' | 'masonry' | 'carousel' | 'stack' | 'collage' | 'mosaic' | 'slideshow' | 'polaroid' | 'magazine' | 'gallery' | 'timeline' | 'hexagon' | 'circular' | 'spiral' | 'wave';  
   frameStyle: 'classic' | 'modern' | 'vintage' | 'polaroid' | 'film' | 'elegant' | 'minimal' | 'neon' | 'romantic' | 'starry' | 'magical';
+  mediaAnimation?: string;
   theme: string;
   backgroundSettings: {
     color: string;

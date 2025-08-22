@@ -179,31 +179,25 @@ const LayoutSelector = ({
                 transition={{ duration: 0.2 }}
                 className="px-4 pb-4"
               >
-               <Select value={frameStyle} onValueChange={onFrameStyleChange}>
-  <SelectTrigger className="w-full border-blue-300">
-    <SelectValue placeholder="Choose frame style" />
-  </SelectTrigger>
-  <SelectContent className="max-h-[300px]">
-    {Object.entries(frameStyles).map(([key, frame]) => (
-      <SelectItem key={key} value={key}>
-        <div className=" flex items-center gap-3">
-          {/* Name */}
-          <div className="font-medium">{frame.name}</div>
-          {/* Small preview */}
-          <div
-            className={cn(
-              "w-full h-6 rounded flex items-center justify-center text-xs font-medium transition-all",
-              frame.className
-            )}
-          >
-            Preview
-          </div>
-        </div>
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
-
+<div className="mt-4 grid grid-cols-2 gap-2">
+  {Object.entries(frameStyles).map(([key, frame]) => (
+    <div
+      key={key}
+      className={cn(
+        "p-2 rounded-md text-xs text-center cursor-pointer transition-all border flex flex-col items-center",
+        frameStyle === key
+          ? "bg-blue-100 text-blue-700 border-blue-300 shadow-sm"
+          : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
+      )}
+      onClick={() => onFrameStyleChange && onFrameStyleChange(key)}
+    >
+      <div className={cn("w-full h-12 mb-1 rounded flex items-center justify-center", frame.className)}>
+        <div className="w-8 h-8 bg-gray-300 rounded-sm opacity-50"></div>
+      </div>
+      <span>{frame.name}</span>
+    </div>
+  ))}
+</div>
           
               </motion.div>
             )}
