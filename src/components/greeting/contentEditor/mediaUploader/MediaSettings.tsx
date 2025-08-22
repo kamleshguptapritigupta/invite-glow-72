@@ -71,6 +71,6 @@ const MediaSettings: React.FC<MediaSettingsProps> = ({ item, index, updateMedia 
       </div>
     </div>
   );
-};
+}; 
 
 export default MediaSettings;
