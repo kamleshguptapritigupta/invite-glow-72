@@ -7,7 +7,7 @@ import { Palette, Type, Image, Sparkles, Settings, Share } from 'lucide-react';
 import BasicDetailsForm from '../contentEditor/BasicDetailsForm';
 import ContentForm from './ContentForm';
 import AdvancedMediaUploader from '../contentEditor/mediaUploader/AdvancedMediaUploader';
-import EmojiSelector from '../contentEditor/EmojiSelector';
+import EmojiSelector from '@/components/greeting/contentEditor/EmojiSelector/EmojiSelector';
 import CustomizationForm from './CustomizationForm';
 
 interface CompactFormColumnProps {

@@ -1,10 +1,23 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { GreetingFormData, MediaItem } from '@/types/greeting'; 
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, Image, Video, AlertCircle, Heart, Star, Sparkles } from 'lucide-react';
+// EnhancedMediaGallery.tsx
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Image as ImageIcon,
+  Video as VideoIcon,
+  AlertCircle,
+  FileImage as GifIcon,
+  ChevronLeft,
+  ChevronRight,
+  X as XIcon,
+} from "lucide-react";
+
+import MediaGalleryStyles, { layoutClassMap } from "./MediaGalleryStyles";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { GreetingFormData, MediaItem } from "@/types/greeting";
+      import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface Props {
   greetingData: GreetingFormData;
@@ -14,328 +27,353 @@ interface Props {
   mediaAnimation?: string;
 }
 
-// Enhanced frame styles with better visual design
-export const frameStyles = {
+const EnhancedMediaGallery: React.FC<Props> = ({
+  greetingData,
+  isEditing = false,
+  onMediaChange,
+  frameStyle,
+}) => {
+  const isMobile = useIsMobile();
 
-  classic:
-    "border-8 border-white shadow-2xl rounded-lg bg-white transition-all hover:scale-[1.02] hover:shadow-3xl",
-  modern:
-    "border-2 bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-lg overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1",
-  vintage:
-    "bg-amber-50 border-4 border-amber-200 shadow-xl rounded-sm relative before:absolute before:inset-2 before:border-2 before:border-amber-300 before:rounded-sm transition-all hover:brightness-105 hover:scale-[1.01]",
-  polaroid:
-    "bg-white p-6 pb-12 shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-500 rounded-md",
-  film:
-    "border-6 border-gray-800 bg-black relative p-2 rounded-sm shadow-2xl before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:bg-gray-800 before:rounded-t after:absolute after:-bottom-3 after:left-0 after:right-0 after:h-3 after:bg-gray-800 after:rounded-b",
-  elegant:
-    "bg-gradient-to-b from-white to-gray-50 rounded-2xl shadow-3xl overflow-hidden border border-yellow-500 transition-all hover:shadow-[0_0_20px_gold]",
-  minimal:
-    "border border-gray-200 bg-white shadow-sm rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5",
-  artistic:
-    "bg-gradient-to-br from-purple-50 to-pink-50 shadow-2xl rounded-3xl p-4 transition-all hover:scale-[1.02] hover:shadow-purple-200",
-  neon:
-    "border-2 border-cyan-400 bg-gray-900 rounded-lg shadow-2xl shadow-cyan-400/50 p-3 overflow-hidden relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-cyan-400/20 before:to-purple-400/20 before:animate-pulse before:rounded-lg",
-  romantic:
-    "bg-gradient-to-br from-rose-50 to-pink-100 border-2 border-rose-200 rounded-2xl shadow-lg p-3 overflow-hidden relative after:absolute after:top-2 after:right-2 after:content-['❤'] after:text-rose-400 after:animate-pulse",
-  starry:
-    "bg-gradient-to-br from-indigo-900 to-purple-900 border border-yellow-400 rounded-lg shadow-2xl p-4 relative overflow-hidden before:absolute before:inset-0 before:bg-[radial-gradient(circle,rgba(255,255,0,0.2)_1px,transparent_1px)] before:bg-[length:20px_20px] before:animate-pulse",
-  magical:
-    "bg-gradient-to-br from-violet-100 to-fuchsia-100 border-2 border-violet-300 rounded-3xl shadow-xl p-4 overflow-hidden relative before:absolute before:inset-0 before:bg-[radial-gradient(circle,rgba(139,92,246,0.2)_2px,transparent_1px)] before:bg-[length:24px_24px] before:animate-bounce",
-};
-
-// Smooth animations
-const animationVariants = {
-  fadeIn: {
-    initial: { opacity: 0, scale: 0.9 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.9 }
-  },
-  slideUp: {
-    initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -30 }
-  },
-  zoomIn: {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 1.1 }
-  },
-  rotateIn: {
-    initial: { opacity: 0, rotate: -5 },
-    animate: { opacity: 1, rotate: 0 },
-    exit: { opacity: 0, rotate: 5 }
-  },
-  bounceIn: {
-    initial: { opacity: 0, scale: 0.7 },
-    animate: { 
-      opacity: 1, 
-      scale: 1,
-      transition: { type: "spring", stiffness: 400, damping: 25 }
-    },
-    exit: { opacity: 0, scale: 0.7 }
-  }
-};
-
-// Responsive layout styles
-const layoutStyles = {
-  grid: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6',
-  masonry: 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:_balance]', // Masonry columns
-  carousel: 'flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-hide',
-  stack: 'flex flex-col gap-8 max-w-4xl mx-auto',
-  collage: 'relative min-h-[400px] grid grid-cols-3 auto-rows-[200px] gap-2 [&>*:nth-child(2n)]:col-span-2 [&>*:nth-child(3n)]:row-span-2', 
-  mosaic: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4',
-  slideshow: 'relative w-full h-[500px] flex items-center justify-center overflow-hidden',
-  polaroid: 'flex flex-wrap justify-center gap-8 [&>*]:bg-white [&>*]:shadow-xl [&>*]:p-2 [&>*]:rotate-1 hover:[&>*]:rotate-0 transition',
-  magazine: 'grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto text-justify',
-  gallery: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8',
-  timeline: 'flex flex-col gap-12 max-w-2xl mx-auto border-l-2 border-gray-300 pl-6',
-  hexagon: 'grid grid-cols-3 gap-4 [clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]',
-  circular: 'flex flex-wrap justify-center items-center gap-8 rounded-full',
-  spiral: 'flex flex-col items-center justify-center gap-6 [transform:rotate(10deg)] [&>*:nth-child(even)]:translate-x-12',
-  wave: 'flex flex-wrap justify-center items-center gap-8 [&>*:nth-child(odd)]:translate-y-4 [&>*:nth-child(even)]:-translate-y-4',
-
-};
-
-const EnhancedMediaGallery: React.FC<Props> = ({ greetingData, isEditing = false, onMediaChange, frameStyle, mediaAnimation }) => {
-  const { translate } = useLanguageTranslation();
-  const [mediaErrors, setMediaErrors] = useState<Record<string, boolean>>({});
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [retryCount, setRetryCount] = useState<Record<string, number>>({});
-  const [loadedMedia, setLoadedMedia] = useState<Set<string>>(new Set());
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [slideshowIndex, setSlideshowIndex] = useState(0);
+  const [layout, setLayout] = useState<keyof typeof layoutClassMap>(
+    greetingData.layout || "grid"
+  );
+
+  const media = greetingData.media || [];
+  const cssLayoutClass = layoutClassMap[layout] || layoutClassMap.grid;
+
+  /** ---------------- Slideshow autoplay ---------------- */
+  useEffect(() => {
+    if (layout !== "slideshow") return;
+    if (!media.length) return;
+    const t = setInterval(
+      () => setSlideshowIndex((s) => (s + 1) % media.length),
+      3500
+    );
+    return () => clearInterval(t);
+  }, [layout, media.length]);
+
+  /** ---------------- Touch swipe for carousel ---------------- */
+  const touchStartX = useRef(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      const container = e.currentTarget;
+      const scrollAmount = container.clientWidth * 0.8;
+      container.scrollBy({
+        left: diff > 0 ? scrollAmount : -scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  /** ---------------- Error & Retry ---------------- */
+  const handleLoad = useCallback((id: string) => {
+    setLoaded((p) => ({ ...p, [id]: true }));
+  }, []);
 
   const handleError = useCallback((id: string) => {
-    setMediaErrors(prev => ({ ...prev, [id]: true }));
+    setErrors((p) => ({ ...p, [id]: true }));
   }, []);
 
-  const handleLoad = useCallback((id: string) => {
-    setLoadedMedia(prev => new Set(prev).add(id));
-  }, []);
-
-  const handleRetry = useCallback((id: string, url: string) => {
-    const currentRetries = retryCount[id] || 0;
-    if (currentRetries < 3) {
-      setRetryCount(prev => ({ ...prev, [id]: currentRetries + 1 }));
-      setMediaErrors(prev => ({ ...prev, [id]: false }));
-      
+  const handleRetry = useCallback(
+    (id: string, url: string) => {
+      const cur = retryCount[id] || 0;
+      if (cur >= 3) return;
+      setRetryCount((p) => ({ ...p, [id]: cur + 1 }));
+      setErrors((p) => ({ ...p, [id]: false }));
       if (onMediaChange) {
-        const updatedMedia = greetingData.media.map(item =>
-          item.id === id ? { ...item, url: `${url}?t=${Date.now()}` } : item
+        const updated = media.map((m) =>
+          m.id === id ? { ...m, url: `${url}?t=${Date.now()}` } : m
         );
-        onMediaChange(updatedMedia);
+        onMediaChange(updated);
       }
-    }
-  }, [retryCount, greetingData.media, onMediaChange]);
+    },
+    [retryCount, media, onMediaChange]
+  );
 
-  // Get layout class based on media count and selected layout
-  const getLayoutClass = useMemo(() => {
-    const { media, layout } = greetingData;
-    
-    if (media.length === 1) {
-      return 'flex justify-center items-center'; // Single media centered
-    }
-    
-    if (media.length <= 3 && !layout) {
-      return 'flex flex-col sm:flex-row gap-6 justify-center items-center'; // Small count, no layout selected
-    }
-    
-    return layoutStyles[layout as keyof typeof layoutStyles] || layoutStyles.grid;
-  }, [greetingData.media.length, greetingData.layout]);
+  /** ---------------- Lightbox controls ---------------- */
+  const openLightbox = (i: number) => {
+    setLightboxIndex(i);
+    document.body.style.overflow = "hidden";
+  };
+  const closeLightbox = () => {
+    setLightboxIndex(null);
+    document.body.style.overflow = "auto";
+  };
+  const nextLightbox = (dir = 1) =>
+    setLightboxIndex((i) =>
+      i === null ? null : (i + dir + media.length) % media.length
+    );
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (lightboxIndex === null) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowRight") nextLightbox(1);
+      if (e.key === "ArrowLeft") nextLightbox(-1);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [lightboxIndex, media.length]);
 
-   // ---- FRAME ----
-  const getFrameStyle = (index: number) => {
-    // Use the selected frameStyle prop if available, otherwise cycle through styles
-    // Priority: greetingData.frameStyle > prop > cycle
-    if (greetingData.frameStyle && frameStyles[greetingData.frameStyle as keyof typeof frameStyles]) {
-      return frameStyles[greetingData.frameStyle as keyof typeof frameStyles];
-    }
-    if (frameStyle && frameStyles[frameStyle as keyof typeof frameStyles]) {
-      return frameStyles[frameStyle as keyof typeof frameStyles];
-    }
-    const frames = Object.keys(frameStyles);
-    return frameStyles[frames[index % frames.length] as keyof typeof frameStyles];
+  /** ---------------- Media renderer ---------------- */
+  const renderMediaItem = (m: MediaItem, index: number) => {
+    const isGif = m.type === "gif";
+    const useCover = ["grid", "carousel", "collage", "slideshow", "polaroid"].includes(
+      layout
+    );
+    const mediaClass = useCover
+      ? "object-cover w-full h-full"
+      : "object-contain w-full h-full";
+
+    return (
+      <div
+        key={m.id}
+        className="gallery-item relative"
+        role="button"
+        aria-label={`open media ${index + 1}`}
+        onClick={() => openLightbox(index)}
+      >
+        {!loaded[m.id] && !errors[m.id] && (
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-100 to-gray-200" />
+        )}
+        {errors[m.id] ? (
+          <div className="flex items-center justify-center p-6 h-40 text-center">
+            <div>
+              <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
+              <p className="text-sm text-red-600 mt-2">Failed to load</p>
+              <div className="mt-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRetry(m.id, m.url);
+                  }}
+                  className="px-3 py-1 bg-white border rounded-md text-sm"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : m.type === "video" ? (
+          <video
+            src={m.url}
+            controls
+            playsInline
+            muted
+            preload="metadata"
+            onLoadedData={() => handleLoad(m.id)}
+            onError={() => handleError(m.id)}
+            className={mediaClass}
+            style={{ display: "block" }}
+          />
+        ) : (
+          <img
+            src={m.url}
+            alt={`media-${index}`}
+            loading="lazy"
+            onLoad={() => handleLoad(m.id)}
+            onError={() => handleError(m.id)}
+            className={mediaClass}
+            style={{ display: "block" }}
+          />
+        )}
+
+        {/* badge */}
+        <div className="absolute top-2 right-2 opacity-95">
+          <div className="bg-white/85 rounded-full p-1.5">
+            {isGif ? (
+              <GifIcon className="w-4 h-4" />
+            ) : m.type === "image" ? (
+              <ImageIcon className="w-4 h-4" />
+            ) : (
+              <VideoIcon className="w-4 h-4" />
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  const getCollagePosition = (index: number, total: number) => {
-    const basePositions = [
-      { top: '10%', left: '10%', rotate: '5deg', scale: 0.9 },
-      { top: '15%', left: '60%', rotate: '-3deg', scale: 1.1 },
-      { top: '50%', left: '20%', rotate: '2deg', scale: 0.95 },
-      { top: '40%', left: '70%', rotate: '-5deg', scale: 1.05 },
-      { top: '70%', left: '40%', rotate: '4deg', scale: 0.92 },
-      { top: '20%', left: '35%', rotate: '-2deg', scale: 1.08 },
-    ];
-    
-    return basePositions[index % basePositions.length];
+  /** ---------------- Layout renderer ---------------- */
+  const renderLayout = () => {
+    if (layout === "slideshow") {
+      return (
+        <div className="slideshow-layout">
+          {media.map((m, i) => (
+            <div
+              key={m.id}
+              className={`gallery-item ${i === slideshowIndex ? "active" : ""}`}
+              onClick={() => openLightbox(i)}
+            >
+              {renderMediaItem(m, i)}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (layout === "carousel") {
+      return (
+        <div
+          className="carousel-layout"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {media.map((m, i) => (
+            <div
+              key={m.id}
+              style={{ minWidth: isMobile ? "85%" : 380 }}
+              className="gallery-item"
+            >
+              {renderMediaItem(m, i)}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // fallback to default layout class
+    return (
+      <div className={cssLayoutClass}>
+        {media.map((m, i) => renderMediaItem(m, i))}
+      </div>
+    );
   };
 
-  const { media } = greetingData;
-  const hasDesign = greetingData.layout && greetingData.layout !== 'grid';
-
+  /** ---------------- Render ---------------- */
   if (isEditing && media.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-6">
-          <Image className="w-12 h-12 text-gray-400" />
+      <>
+        <MediaGalleryStyles />
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-6">
+            <ImageIcon className="w-12 h-12 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            No media added yet
+          </h3>
+          <p className="text-gray-500 text-sm">
+            Add some images or videos to make your greeting special
+          </p>
         </div>
-        <h3 className="text-xl font-semibold text-gray-600 mb-2">
-          {translate('No media added yet')}
-        </h3>
-        <p className="text-gray-500 text-sm">
-          {translate('Add some images or videos to make your greeting special')}
-        </p>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className={cn(
-      "p-6 lg:p-8 transition-all duration-500",
-      getLayoutClass,
-      hasDesign && "bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-inner"
-    )}>
-      <AnimatePresence mode="popLayout">
-        {media.map((mediaItem, index) => {
-          const isCollage = greetingData.layout === 'collage';
-          const collagePosition = isCollage ? getCollagePosition(index, media.length) : null;
-          const frameClass = getFrameStyle(index);
-          const animation = animationVariants[mediaItem.animation as keyof typeof animationVariants] || animationVariants.fadeIn;
-          const isLoaded = loadedMedia.has(mediaItem.id);
-          const mediaFrameStyle = (mediaItem as any).frameStyle ? frameStyles[(mediaItem as any).frameStyle as keyof typeof frameStyles] : frameClass;
+    <>
+      <MediaGalleryStyles />
 
-          return (
-            <motion.div
-              key={mediaItem.id}
-              className={cn(
-                "group overflow-hidden transition-all duration-500 hover:scale-105",
-                mediaFrameStyle,
-                "max-w-[500px] max-h-[400px]", // Enforce max size
-                isCollage && "absolute cursor-pointer",
-                media.length === 1 && "max-w-2xl mx-auto", // Center single media
-                !hasDesign && "shadow-lg hover:shadow-2xl" // Enhanced shadow when no design
-              )}
-              style={isCollage && collagePosition ? {
-                top: collagePosition.top,
-                left: collagePosition.left,
-                width: mediaItem.position?.width || 280,
-                height: mediaItem.position?.height || 220,
-                transform: `rotate(${collagePosition.rotate}) scale(${collagePosition.scale})`,
-                zIndex: mediaItem.priority || index
-              } : {
-                width: mediaItem.position?.width || 'auto',
-                height: mediaItem.position?.height || 'auto'
-              }}
-              variants={animation}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              whileHover={{ 
-                scale: isCollage ? 1.15 : 1.05, 
-                zIndex: 50,
-                rotate: isCollage ? '0deg' : '0deg'
-              }}
-              layout
+      {/* ✅ Layout selector UI */}
+
+<div className="flex justify-end mb-4">
+  <Select
+    value={layout}
+    onValueChange={(val) => {
+      setLayout(val as keyof typeof layoutClassMap);
+      greetingData.layout = val as keyof typeof layoutClassMap;
+    }}
+  >
+    <SelectTrigger className="w-40 text-sm rounded-lg shadow-sm border">
+      <SelectValue placeholder="Choose layout" />
+    </SelectTrigger>
+    <SelectContent className="max-h-60 overflow-y-auto">
+      {Object.keys(layoutClassMap).map((opt) => (
+        <SelectItem key={opt} value={opt} className="capitalize">
+          {opt}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+
+
+      {/* Gallery */}
+      <div
+        className={cn("gallery-container", cssLayoutClass)}
+        style={{ padding: isMobile ? 12 : 20 }}
+      >
+        {renderLayout()}
+      </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxIndex !== null && media[lightboxIndex] && (
+          <div
+            className="lightbox-backdrop"
+            onClick={closeLightbox}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className="lightbox-panel"
+              onClick={(e) => e.stopPropagation()}
             >
-              {mediaErrors[mediaItem.id] ? (
-                <div className="flex flex-col items-center justify-center h-48 bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 rounded-lg p-6">
-                  <AlertCircle className="h-10 w-10 text-red-400 mb-3" />
-                  <p className="text-red-600 text-sm font-medium mb-3 text-center">
-                    {translate('Failed to load media')}
-                  </p>
-                  <Button
-                    onClick={() => handleRetry(mediaItem.id, mediaItem.url)}
-                    disabled={(retryCount[mediaItem.id] || 0) >= 3}
-                    size="sm"
-                    variant="outline"
-                    className="h-8 px-4 text-xs border-red-300 hover:bg-red-50 transition-colors"
+              <div className="flex justify-between p-3">
+                <div />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => nextLightbox(-1)}
+                    className="p-2 rounded-full bg-white/90"
                   >
-                    <RefreshCw className="h-3 w-3 mr-2" />
-                    {(retryCount[mediaItem.id] || 0) >= 3 ? 'Max retries' : 'Try again'}
-                  </Button>
+                    <ChevronLeft />
+                  </button>
+                  <button
+                    onClick={() => nextLightbox(1)}
+                    className="p-2 rounded-full bg-white/90"
+                  >
+                    <ChevronRight />
+                  </button>
+                  <button
+                    onClick={closeLightbox}
+                    className="p-2 rounded-full bg-white/90"
+                  >
+                    <XIcon />
+                  </button>
                 </div>
-              ) : (
-                <div className="relative overflow-hidden rounded-lg">
-                  {/* Loading skeleton */}
-                  {!isLoaded && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse rounded-lg" />
-                  )}
+              </div>
 
-                  {mediaItem.type === 'image' ? (
-                    <>
-                      <motion.img
-                        src={mediaItem.url}
-                        alt={`Greeting media ${index + 1}`}
-                        className="w-full h-full object-cover transition-opacity duration-500"
-                        style={{ opacity: isLoaded ? 1 : 0 }}
-                        onError={() => handleError(mediaItem.id)}
-                        onLoad={() => handleLoad(mediaItem.id)}
-                        whileHover={{ scale: 1.08 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0">
-                        <Image className="h-4 w-4 text-blue-600" />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <motion.video
-                        src={mediaItem.url}
-                        className="w-full h-full object-cover"
-                        controls
-                        muted
-                        playsInline
-                        onError={() => handleError(mediaItem.id)}
-                        onLoadedData={() => handleLoad(mediaItem.id)}
-                        style={{ opacity: isLoaded ? 1 : 0 }}
-                        whileHover={{ scale: 1.05 }}
-                      />
-                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0">
-                        <Video className="h-4 w-4 text-red-600" />
-                      </div>
-                    </>
-                  )}
-                  
-                  {/* Enhanced overlay effects */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  {/* Decorative elements based on frame style */}
-                  {frameClass.includes('vintage') && (
-                    <div className="absolute inset-0 border-2 border-amber-300/50 rounded-lg" />
-                  )}
-                  
-                  {frameClass.includes('elegant') && (
-                    <div className="absolute -inset-4 bg-gradient-to-r from-gold-200/20 to-gold-400/10 rounded-3xl" />
-                  )}
-                  
-                  {/* Polaroid label with better styling */}
-                  {frameClass.includes('polaroid') && (
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="text-sm text-gray-700 font-handwriting bg-white/80 backdrop-blur-sm rounded-lg px-3 py-2 text-center border border-gray-200">
-                        📸 Memory #{index + 1}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Favorite indicator */}
-                  {mediaItem.priority && (
-                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full p-1">
-                      <Heart className="h-3 w-3 text-red-500 fill-current" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          );
-        })}
+              <div className="lightbox-media">
+                {media[lightboxIndex].type === "video" ? (
+                  <video
+                    src={media[lightboxIndex].url}
+                    controls
+                    autoPlay
+                    className="lightbox-inner-media"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "80vh",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={media[lightboxIndex].url}
+                    alt={`lightbox-${lightboxIndex}`}
+                    loading="lazy"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "80vh",
+                      objectFit: "contain",
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </AnimatePresence>
-
-      {/* Layout indicator badge */}
-      {/* {hasDesign && (
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-gray-700 border border-gray-200">
-          {greetingData.layout} layout
-        </div>
-      )} */}
-    </div>
+    </>
   );
 };
 

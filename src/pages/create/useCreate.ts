@@ -22,6 +22,7 @@ export function useCreate() {
     receiverName: "",
     texts: [],
     media: [],
+    audioUrl: '',
     videoUrl: "",
     videoPosition: { width: 400, height: 300 },
     animationStyle: "fade",

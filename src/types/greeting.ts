@@ -41,7 +41,7 @@ export interface TextOverlay {
 export interface MediaItem {
   id: string;
   url: string;
-  type: 'image' | 'video';
+  type: 'image' | 'video' | 'gif';
   position: {
     width: number;
     height: number;
@@ -63,13 +63,14 @@ export interface GreetingFormData {
   receiverName: string;
   texts: TextContent[];
   media: MediaItem[];
+  audioUrl?: '',
   videoUrl: string;
   videoPosition: {
     width: number;
     height: number;
   };
   animationStyle: string;
-  layout: 'grid' | 'masonry' | 'carousel' | 'stack' | 'collage' | 'mosaic' | 'slideshow' | 'polaroid' | 'magazine' | 'gallery' | 'timeline' | 'hexagon' | 'circular' | 'spiral' | 'wave';  
+  layout: 'grid' | 'masonry' | 'carousel' | 'slideshow' | 'polaroid' | 'gallery' | 'hexagon' | 'circular' | 'spiral' | 'wave';  
   frameStyle: 'classic' | 'modern' | 'vintage' | 'polaroid' | 'film' | 'elegant' | 'minimal' | 'neon' | 'romantic' | 'starry' | 'magical';
   mediaAnimation?: string;
   theme: string;

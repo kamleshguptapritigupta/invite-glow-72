@@ -1,9 +1,10 @@
 import { Separator } from '@/components/ui/separator';
+import { useState, useEffect, useRef } from "react";
 import { BorderSettings } from '@/types/background';
 import BackgroundCustomizer from '../customization/BackgroundCustomizer/BackgroundCustomizer';
 import BorderCustomizer from '../customization/BorderCustomizer/BorderCustomizer';
 import LayoutSelector from '../customization/LayoutSelector';
-import EmojiSelector from '../contentEditor/EmojiSelector';
+import EmojiSelector from '@/components/greeting/contentEditor/EmojiSelector/EmojiSelector';
 
 interface CustomizationFormProps {
   backgroundSettings: any;
@@ -35,6 +36,9 @@ const CustomizationForm = ({
   onFrameStyleChange, 
 
 }: CustomizationFormProps) => {
+
+   const [audioUrl, setAudioUrl] = useState("");
+
   return (
     <>
 
@@ -71,6 +75,8 @@ const CustomizationForm = ({
         onAnimationChange={onAnimationChange}
         onFrameStyleChange={onFrameStyleChange}
       />
+      
+      
     </>
   );
 };

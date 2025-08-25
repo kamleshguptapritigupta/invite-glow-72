@@ -1,5 +1,6 @@
 import AITextSuggestions from '../contentEditor/AITextSuggestions';
-import GIFSearchWidget from '../contentEditor/GIFSearchWidget';
+import GIFSearchWidget from '@/components/greeting/contentEditor/mediaUploader/GIFSearchWidget';
+
 import SaveGreetingButton from '@/components/share/SaveGreetingButton';
 import { TextContent, MediaItem } from '@/types/greeting';
 import AdvancedTextEditor from '../contentEditor/textEditor/AdvancedTextEditor';

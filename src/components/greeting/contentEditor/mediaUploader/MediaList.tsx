@@ -1,3 +1,4 @@
+// src/components/media/MediaList.tsx
 import { AnimatePresence, motion } from "framer-motion";
 import { MediaItem } from "@/types/greeting";
 import MediaItemCard from "./MediaItemCard";
@@ -14,6 +15,7 @@ interface MediaListProps {
   handleDragEnd: () => void;
   dragIndex: number | null;
   isDragging: boolean;
+  highlightIndex?: number | null; // new: index to highlight (replace animation)
 }
 
 const MediaList = ({
@@ -28,6 +30,7 @@ const MediaList = ({
   handleDragEnd,
   dragIndex,
   isDragging,
+  highlightIndex = null,
 }: MediaListProps) => {
   return (
     <AnimatePresence>
@@ -53,22 +56,22 @@ const MediaList = ({
           onDragEnd={handleDragEnd}
           className={`relative ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
         >
-         <MediaItemCard
-  item={item}
-  index={index}
-  media={media}
-  active={activeMediaIndex === index}   // ✅ convert to boolean
-  setActive={(i) => setActiveMediaIndex(i)}  // ✅ map function
-  removeMedia={removeMedia}
-  updateMedia={updateMedia}
-  moveMediaPriority={moveMediaPriority}
-  handleDragStart={handleDragStart}
-  handleDragOver={handleDragOver}
-  handleDragEnd={handleDragEnd}
-  isDragging={isDragging}
-  dragIndex={dragIndex}
-/>
-
+          <MediaItemCard
+            item={item}
+            index={index}
+            media={media}
+            active={activeMediaIndex === index}
+            setActive={(i) => setActiveMediaIndex(i)}
+            removeMedia={removeMedia}
+            updateMedia={updateMedia}
+            moveMediaPriority={moveMediaPriority}
+            handleDragStart={handleDragStart}
+            handleDragOver={handleDragOver}
+            handleDragEnd={handleDragEnd}
+            isDragging={isDragging}
+            dragIndex={dragIndex}
+            highlight={highlightIndex === index} // new prop
+          />
         </motion.div>
       ))}
     </AnimatePresence>

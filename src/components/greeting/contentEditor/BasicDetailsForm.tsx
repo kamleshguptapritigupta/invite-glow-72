@@ -4,6 +4,8 @@ import { Separator } from '@/components/ui/separator';
 import { EventType } from '@/types/greeting';
 import CustomEventSelector from './CustomEventSelector';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
+import AudioPlayerInput from '@/components/greeting/contentEditor/AudioPlayerInput/AudioPlayerInput';
+import {useState} from "react";
 
 interface BasicDetailsFormProps {
   eventType: string;
@@ -25,7 +27,7 @@ const BasicDetailsForm = ({
   onCustomEventCreate
 }: BasicDetailsFormProps) => {
   const { translate } = useLanguageTranslation();
-
+  const [url, setUrl] = useState("");
   return (
     <>
       {/* Custom Event Selector */}
@@ -59,6 +61,20 @@ const BasicDetailsForm = ({
           />
         </div>
       </div>
+
+
+            {/* <Separator />
+
+
+            <div className="space-y-2 p-6 border border-red-300 rounded-xl shadow-lg">
+              <Label htmlFor="audioUrl">Background Music URL (optional)</Label>
+                <AudioPlayerInput 
+        value={url}
+        onChange={setUrl}   // updates local state directly
+        autoPlay
+      />
+            </div> */}
+            
     </>
   );
 };

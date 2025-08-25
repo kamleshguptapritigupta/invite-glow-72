@@ -1,11 +1,14 @@
-export const validateUrl = (url: string): boolean => {
-  try {
+
+// mediaUtils.ts
+export function validateUrl(url: string): boolean {
+ try {
     new URL(url);
     return true;
   } catch {
     return false;
   }
-};
+}
+
 
 export const getEmbedCode = (url: string): string => {
   if (url.includes("youtube.com") || url.includes("youtu.be")) {

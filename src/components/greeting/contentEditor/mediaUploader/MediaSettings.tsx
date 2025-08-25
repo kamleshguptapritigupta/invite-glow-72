@@ -14,6 +14,7 @@ const MediaSettings: React.FC<MediaSettingsProps> = ({ item, index, updateMedia 
   return (
     <div className="space-y-3 p-3 rounded-md border border-pink-200">
       {/* Size Controls */}
+      <div className="hidden md:block">
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label>Width (px)</Label>
@@ -40,6 +41,7 @@ const MediaSettings: React.FC<MediaSettingsProps> = ({ item, index, updateMedia 
           />
         </div>
       </div>
+      </div>
 <div className="grid grid-cols-2 gap-3">
       {/* Animation Select */}
       <div>
@@ -57,6 +59,11 @@ const MediaSettings: React.FC<MediaSettingsProps> = ({ item, index, updateMedia 
             <SelectItem value="zoomIn">Zoom In</SelectItem>
             <SelectItem value="rotateIn">Rotate In</SelectItem>
             <SelectItem value="bounceIn">Bounce In</SelectItem>
+
+            <SelectItem value="fadeUpStagger">Fade Up Stagger</SelectItem>
+            <SelectItem value="slideLeft">Slide Left</SelectItem>
+            <SelectItem value="flipIn">Flip In</SelectItem>
+            <SelectItem value="swingIn">Swing In</SelectItem>
           </SelectContent>
         </Select>
       </div>

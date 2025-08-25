@@ -101,8 +101,8 @@ const CustomEventSelector = ({
           <Button
             onClick={() => setShowCustomForm(!showCustomForm)}
             size="sm"
-            variant="outline"
-            className="transition-all duration-5000 font-medium bg-primary/10 text-primary border-primary animate-pulse"
+            variant="default"
+            className="transition-all duration-5000 animate-pulse"
           >
             <Plus className="h-3 w-3 mr-1" />
             Custom Event
